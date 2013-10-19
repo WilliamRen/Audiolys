@@ -1,7 +1,6 @@
 package media.player.activities;
 
 import com.example.media.player.audiolys.R;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -11,7 +10,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        
+        
+        /* simon : needs changes */ 
+        setContentView(R.layout.activity_music); // simon : change this to main
+        /* end simon */
     }
 
 
