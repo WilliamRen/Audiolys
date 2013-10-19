@@ -1,5 +1,7 @@
 package media.player.activities;
 
-public class AudioActivity {
+import android.app.Activity;
+
+public class AudioActivity extends Activity {
 
 }
