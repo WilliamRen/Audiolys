@@ -1,4 +1,6 @@
-package com.example.media.player.audiolys;
+package media.player.activities;
+
+import com.example.media.player.audiolys.R;
 
 import android.os.Bundle;
 import android.app.Activity;

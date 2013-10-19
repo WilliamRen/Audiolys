@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Audiolys</string>
     <string name="action_settings">Settings</string>
+    <string name="image_desc">description</string>
 </resources>
