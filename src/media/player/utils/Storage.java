@@ -10,6 +10,11 @@ import android.os.Environment;
 import android.util.Log;
 
 public class Storage {
+	
+	public Storage()
+	{
+		
+	}
 
 	public enum State {
 		NOTAVAILABLE, MOUNTED, READONLY, WRITEABLE;

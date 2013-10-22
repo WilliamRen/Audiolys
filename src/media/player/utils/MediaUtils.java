@@ -4,7 +4,7 @@ package media.player.utils;
  * 		Source code from http://www.androidhive.info
  */
 
-public class MediaPlayer {
+public class MediaUtils {
 
 	/**
 	 * Function to convert milliseconds time to Timer Format

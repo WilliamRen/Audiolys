@@ -3,20 +3,26 @@ package media.player.fragments;
 import com.example.media.player.audiolys.R;
 
 import media.player.models.AudioPlayer;
-import media.player.utils.MediaPlayer;
+import media.player.utils.MediaUtils;
 import android.app.Fragment;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnHoverListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class AudioFragment extends Fragment implements OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class AudioFragment extends Fragment implements OnClickListener,
+		SeekBar.OnSeekBarChangeListener {
 
 	/* Variables */
 	private AudioPlayer audioPlayer;
@@ -50,6 +56,7 @@ public class AudioFragment extends Fragment implements OnClickListener, SeekBar.
 		v.findViewById(R.id.imageViewPlayButton).setOnClickListener(this);
 		v.findViewById(R.id.imageViewNextButton).setOnClickListener(this);
 		v.findViewById(R.id.imageViewPreviousButton).setOnClickListener(this);
+
 		progressBarMusic.setOnSeekBarChangeListener(this);
 
 		// Set an audio manager + context
@@ -64,9 +71,9 @@ public class AudioFragment extends Fragment implements OnClickListener, SeekBar.
 	}
 
 	/*********************************************************************************/
-	/**		Implemented methods														**/
+	/** Implemented methods **/
 	/*********************************************************************************/
-	
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -95,34 +102,39 @@ public class AudioFragment extends Fragment implements OnClickListener, SeekBar.
 	@Override
 	public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onStartTrackingTouch(SeekBar arg0) {
 		// TODO Auto-generated method stub
-		musicHandler.removeCallbacks(progressBarUpdateTime); // remove function callback - bug otherwise 
+		musicHandler.removeCallbacks(progressBarUpdateTime); // remove function
+																// callback -
+																// bug otherwise
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		// TODO Auto-generated method stub
-		 musicHandler.removeCallbacks(progressBarUpdateTime); // remove function callback - bug otherwise 
-		 int currentPosition = MediaPlayer.progressToTimer(progressBarMusic.getProgress(), audioPlayer.getDuration());
-		 
-		 // forward or backward to certain seconds
-	     audioPlayer.seekTo(currentPosition);
-	     
-	     // update timer progress again
-	     updateProgressBar();
+		musicHandler.removeCallbacks(progressBarUpdateTime); // remove function
+																// callback -
+																// bug otherwise
+		int currentPosition = MediaUtils.progressToTimer(
+				progressBarMusic.getProgress(), audioPlayer.getDuration());
+
+		// forward or backward to certain seconds
+		audioPlayer.seekTo(currentPosition);
+
+		// update timer progress again
+		updateProgressBar();
 	}
 
 	/*********************************************************************************/
-	/**		End of implemented methods												**/
+	/** End of implemented methods **/
 	/*********************************************************************************/
-	
+
 	/*********************************************************************************/
-	/**		Required methods related to audio playing								**/
+	/** Required methods related to audio playing **/
 	/*********************************************************************************/
 
 	public void initMusic() {
@@ -141,6 +153,29 @@ public class AudioFragment extends Fragment implements OnClickListener, SeekBar.
 		updateProgressBar();
 	}
 
+	/*public void forwardMusic() {
+		int currentPosition = audioPlayer.getCurrentPosition();
+		int duration = audioPlayer.getDuration();
+		int goToPosition = currentPosition + FORWARD_SECONDS;
+		if (goToPosition <= duration)
+			audioPlayer.seekTo(goToPosition);
+		else
+			audioPlayer.seekTo(duration);
+
+		Log.d("simon", "test forward done " + goToPosition);
+
+	}
+
+	public void backwardMusic() {
+		int currentPosition = audioPlayer.getCurrentPosition();
+		int goToPosition = currentPosition - BACKWARD_SECONDS;
+		if (goToPosition >= 0)
+			audioPlayer.seekTo(goToPosition);
+		else
+			audioPlayer.seekTo(0);
+		Log.d("simon", "test backward done " + goToPosition);
+	}*/
+
 	// Update the progressbar, see progressBarUpdateTime
 	public void updateProgressBar() {
 		// Delayed call to progressBarUpdateTime function - 100 milliseconds
@@ -156,44 +191,48 @@ public class AudioFragment extends Fragment implements OnClickListener, SeekBar.
 			long currentDuration = audioPlayer.getCurrentPosition();
 
 			// Update textviews
-			textViewCurrentPosition.setText(MediaPlayer
+			textViewCurrentPosition.setText(MediaUtils
 					.millisecondsToTimer(currentDuration));
-			textviewTotalDuration.setText(MediaPlayer
+			textviewTotalDuration.setText(MediaUtils
 					.millisecondsToTimer(totalDuration));
 
 			// Updating progress bar
-			int progress = (int) (MediaPlayer.getProgressPercentage(currentDuration,
-					totalDuration));
+			int progress = (int) (MediaUtils.getProgressPercentage(
+					currentDuration, totalDuration));
 			progressBarMusic.setProgress(progress);
 
 			// Delayed call to itself - 100 milliseconds
 			musicHandler.postDelayed(this, 100);
 		}
 	};
-	
+
 	/*********************************************************************************/
-	/**		End of required methods related to audio playing						**/
+	/** End of required methods related to audio playing **/
 	/*********************************************************************************/
-	
+
+	/*********************************************************************************/
+	/** Related to the lifecycle of the application **/
+	/*********************************************************************************/
+
 	public void onStop() {
 		super.onStop();
 		musicHandler.removeCallbacks(progressBarUpdateTime);
 		audioPlayer.stop(); // simon - bug onStop - correct it out
 	};
-	
+
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		musicHandler.removeCallbacks(progressBarUpdateTime);
 		audioPlayer.pause();
 		super.onPause();
-		
+
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
+
 	}
 }
