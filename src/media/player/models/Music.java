@@ -2,9 +2,11 @@ package media.player.models;
 
 import java.io.File;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class Music {
+public class Music implements Parcelable{
 
 	File music;
 	String title;
@@ -13,7 +15,7 @@ public class Music {
 	int duration;
 	
 	
-	public Music(File music) {
+	public Music(File music){
 		super();
 		this.music = music;
 		this.title = researchTitle(music.getName());
@@ -82,5 +84,17 @@ public class Music {
 	public String toString() {
 		return "Music [music=" + music + ", title=" + title + ", band=" + band
 				+ ", image=" + image + ", duration=" + duration + "]";
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
 	}
 }
