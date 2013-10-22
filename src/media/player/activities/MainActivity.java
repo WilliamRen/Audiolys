@@ -11,12 +11,18 @@ import com.example.media.player.audiolys.R;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemClickListener {
 	ArrayList<HashMap<String,String>> listItem;
 	ArrayList<Music> musics;
 	ListView listMusic;
@@ -42,6 +48,7 @@ public class MainActivity extends Activity {
 							R.id.musictitle, R.id.musicband});
 	        listMusic = (ListView) findViewById(R.id.listView_music);
 	        listMusic.setAdapter(miseEnFormeItems);
+	        listMusic.setOnItemClickListener(this);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
@@ -69,6 +76,27 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		switch (arg0.getId()) {
+		case R.id.listView_music:
+	        Toast.makeText(getApplicationContext(), "Music:"+musics.get(arg2),Toast.LENGTH_LONG).show();
+	        Music clickMusic = musics.get(arg2);
+			Intent playerIntent = new Intent(this, AudioActivity.class);
+			Bundle data = new Bundle();
+			data.putParcelableArrayList("listMusics", musics);
+			data.putParcelable("clickMusic", clickMusic);
+			//playerIntent.putExtra("listMusics", musics);
+			playerIntent.putExtras(data);
+			startActivity(playerIntent);
+			break;
+
+		default:
+			Toast.makeText(getApplicationContext(), "faux", Toast.LENGTH_SHORT).show();
+			break;
+		}		
+	}
     
     
     
