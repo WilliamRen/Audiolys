@@ -1,12 +1,13 @@
 package media.player.models;
 
 import java.io.File;
+import java.io.Serializable;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-public class Music implements Parcelable{
+public class Music implements Serializable{
 
 	File music;
 	String title;
@@ -84,17 +85,5 @@ public class Music implements Parcelable{
 	public String toString() {
 		return "Music [music=" + music + ", title=" + title + ", band=" + band
 				+ ", image=" + image + ", duration=" + duration + "]";
-	}
-
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		
 	}
 }
