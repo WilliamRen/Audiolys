@@ -1,5 +1,6 @@
 package media.player.models;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.media.AudioManager;
@@ -18,8 +19,29 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener {
 	public void load(int position) {
 	}
 
-	public void play() {
+	public void loading(Music music)
+	{
 		try {
+			this.mediaPlayer.reset();
+			this.mediaPlayer.setDataSource(music.getMusic().getAbsolutePath());
+			this.mediaPlayer.prepare();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void play() {
+		/*try {
 			this.mediaPlayer
 					.setDataSource("/storage/sdcard0/Music/Tryo - 2008 - Ce Que L'on Sème/09 Marcher droit.mp3");
 			this.mediaPlayer.prepare();
@@ -36,7 +58,8 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		this.mediaPlayer.start();
 	}
 
 	public void pause() {
@@ -57,8 +80,8 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener {
 		this.mediaPlayer.stop();
 	}
 
-	public boolean isPlaying() {
-		return false;
+	public boolean isPlaying() {		
+		return this.mediaPlayer.isPlaying();
 	}
 
 	public int getDuration() {

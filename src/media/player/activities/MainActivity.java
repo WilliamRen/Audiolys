@@ -23,9 +23,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends Activity implements OnItemClickListener {
 	ArrayList<HashMap<String,String>> listItem;
-	ArrayList<Music> musics;
+	public ArrayList<Music> musics;
 	ListView listMusic;
-    @Override
+   
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_main);
@@ -78,12 +79,12 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		switch (arg0.getId()) {
 		case R.id.listView_music:
-	        Toast.makeText(getApplicationContext(), "Music:"+musics.get(arg2),Toast.LENGTH_LONG).show();
+	        //Toast.makeText(getApplicationContext(), "Music:"+musics.get(arg2),Toast.LENGTH_LONG).show();
 	        Music clickMusic = musics.get(arg2);
 			Intent playerIntent = new Intent(this, AudioActivity.class);
 			Bundle data = new Bundle();
 			data.putSerializable("listMusics", musics);
-			data.putSerializable("clickMusic", clickMusic);
+			data.putInt("selectedMusic", arg2);
 			playerIntent.putExtras(data);
 			startActivity(playerIntent);
 			break;
@@ -93,7 +94,4 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			break;
 		}		
 	}
-    
-    
-    
 }
