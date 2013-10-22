@@ -14,16 +14,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnHoverListener;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class AudioFragment extends Fragment implements OnClickListener,
-		SeekBar.OnSeekBarChangeListener {
-
+public class AudioFragment extends Fragment implements OnClickListener, SeekBar.OnSeekBarChangeListener {
 	/* Variables */
 	private AudioPlayer audioPlayer;
 	private SeekBar progressBarMusic;
@@ -235,4 +230,5 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		super.onDestroy();
 
 	}
+
 }
