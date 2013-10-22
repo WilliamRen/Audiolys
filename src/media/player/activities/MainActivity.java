@@ -29,10 +29,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
-        //setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_music);
-
-        /*
+        setContentView(R.layout.activity_main);
+        
         listItem = new ArrayList<HashMap<String,String>>();
 		musics = new ArrayList<Music>();
 
@@ -53,7 +51,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
-		}*/
+		}
     }
 
     //Create a HashMap
