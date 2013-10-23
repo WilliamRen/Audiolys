@@ -86,12 +86,21 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			data.putSerializable("listMusics", musics);
 			data.putInt("selectedMusic", arg2);
 			playerIntent.putExtras(data);
+			
+			
+			
 			startActivity(playerIntent);
+			overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			break;
 
 		default:
-			Toast.makeText(getApplicationContext(), "faux", Toast.LENGTH_SHORT).show();
 			break;
 		}		
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
 	}
 }

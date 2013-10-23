@@ -3,11 +3,19 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-   
-    <ViewSwitcher
+
+    <!--     <ViewSwitcher
+        android:layout_marginTop="40dp"
         android:id="@+id/viewSwitcherCase"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >         
-    </ViewSwitcher>
+        android:layout_height="wrap_content" >
+    </ViewSwitcher>-->
     
+     <ViewFlipper
+        android:layout_marginTop="40dp"
+        android:id="@+id/viewSwitcherCase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ViewFlipper>
+
 </LinearLayout>

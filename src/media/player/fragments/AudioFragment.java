@@ -1,10 +1,7 @@
 package media.player.fragments;
 
 import java.util.ArrayList;
-
 import com.example.media.player.audiolys.R;
-
-import media.player.activities.AudioActivity;
 import media.player.models.AudioPlayer;
 import media.player.models.Music;
 import media.player.utils.MediaUtils;
@@ -12,15 +9,14 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -34,41 +30,33 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private Handler musicHandler = new Handler();
 	private TextView textViewCurrentPosition;
 	private TextView textviewTotalDuration;
-
+	private TextView textViewMusicName;
 	private ImageView playButton;
 	private ImageView nextButton;
 	private ImageView previousButton;
+	private onChangeEvents mCallBackEvent;
+	private ArrayList<Music> musics = new ArrayList<Music>();
+	private int selectedMusic = -1;
 
-	ArrayList<Music> musics = new ArrayList<Music>();
-	int selectedMusic = -1;
+	public enum Orders {
+		PLAY, PAUSE, NEXT, PREVIOUS;
+	}
 
 	/* EOVariables */
 
-	// Enumerate : give orders
-	public enum Orders {
-		PLAY, PAUSE, NEXT, PREVIOUS, STOP;
+	public interface onChangeEvents {
+		public void onChangeE(Orders o, int selectedMusic);
 	}
-
-	public onPlayButtonClickListener mCallBack;
-
-	public interface onPlayButtonClickListener {
-		public void onPlayButtonClick(Orders order);
-	}
-
+	
+	@Override
 	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mCallBack = (onPlayButtonClickListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnNavButtonClickListener");
-		}
-	}
-
-	public void sendData(ArrayList<Music> musics, int selectedMusic) {
-		this.musics = musics;
-		this.selectedMusic = selectedMusic;
-		initMusic();
+	    super.onAttach(activity);
+	    try {
+	    	mCallBackEvent = (onChangeEvents) activity;
+	    } catch (ClassCastException e) {
+	        throw new ClassCastException(activity.toString()
+	                + " must implement OnNavButtonClickListener");
+	    }
 	}
 
 	@Override
@@ -80,13 +68,15 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 		// Bind Java code and XML
 		progressBarMusic = (SeekBar) v.findViewById(R.id.seekBarAudio);
+		textViewMusicName = (TextView) v.findViewById(R.id.textViewMusicName);
 		textViewCurrentPosition = (TextView) v
 				.findViewById(R.id.textViewMusicCurrentPosition);
 		textviewTotalDuration = (TextView) v
 				.findViewById(R.id.textViewMusicTotalDuration);
 		playButton = (ImageView) v.findViewById(R.id.imageViewPlayButton);
 		nextButton = (ImageView) v.findViewById(R.id.imageViewNextButton);
-		previousButton = (ImageView) v.findViewById(R.id.imageViewPreviousButton);
+		previousButton = (ImageView) v
+				.findViewById(R.id.imageViewPreviousButton);
 
 		// Set a listener on buttons
 		playButton.setOnClickListener(this);
@@ -105,6 +95,27 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		return v;
 	}
 
+	// Receive data from AudioActivity
+	public void sendData(ArrayList<Music> musics, int selectedMusic) {
+		
+		this.selectedMusic = selectedMusic;
+		this.musics = musics;
+		
+		this.audioPlayer.loading(musics.get(selectedMusic));
+		refresh();
+		playMusic();
+
+		// When the player finishes to read the song
+		this.audioPlayer.mediaPlayer
+				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+					public void onCompletion(MediaPlayer mp) {
+						// TODO Auto-generated method stub
+						playNext();
+					}
+				});
+	}
+
 	/*********************************************************************************/
 	/** Implemented methods **/
 	/*********************************************************************************/
@@ -117,17 +128,16 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Click on play button
 		case R.id.imageViewPlayButton:
 			playMusic();
-			//mCallBack.onPlayButtonClick(Orders.PLAY);
 			break;
 
 		// Click on next button
 		case R.id.imageViewNextButton:
-			nextMusic();
+			playNext();
 			break;
 
 		// Click on previous button
 		case R.id.imageViewPreviousButton:
-			previousMusic();
+			playPrevious();
 			break;
 
 		default:
@@ -138,23 +148,18 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onStartTrackingTouch(SeekBar arg0) {
-		// TODO Auto-generated method stub
-		musicHandler.removeCallbacks(progressBarUpdateTime); // remove function
-																// callback -
-																// bug otherwise
+		// remove function callback - bug otherwise
+		musicHandler.removeCallbacks(progressBarUpdateTime);
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		musicHandler.removeCallbacks(progressBarUpdateTime); // remove function
-																// callback -
-																// bug otherwise
+		// remove function callback - bug otherwise
+		musicHandler.removeCallbacks(progressBarUpdateTime);
 		int currentPosition = MediaUtils.progressToTimer(
 				progressBarMusic.getProgress(), audioPlayer.getDuration());
 
@@ -173,76 +178,72 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	/** Required methods related to audio playing **/
 	/*********************************************************************************/
 
-	public void initMusic() {
-		Log.w("simon",String.valueOf(selectedMusic));
-		audioPlayer.loading(musics.get(selectedMusic));
+	public void refresh() {
+		textViewMusicName.setText(this.musics.get(selectedMusic).getTitle());
 		this.progressBarMusic.setMax(100);
 		this.progressBarMusic.setProgress(0);
-		playMusic();
+	}
+
+	public void initMusic() {
+		// Log.w("simon",String.valueOf(selectedMusic));
+		// audioPlayer.loading(musics.get(selectedMusic));
+
+		updateProgressBar();
+		// playMusic();
 	}
 
 	// Function called when a music is about to be playing
 	public void playMusic() {
-		// play music
-		
-		if(this.audioPlayer.isPlaying())
-		{
+
+		// is the player playing?
+		if (this.audioPlayer.isPlaying()) {
 			// Change play to pause button
 			playButton.setBackgroundResource(R.drawable.selector_play_button);
 			this.audioPlayer.pause();
-		}
-		else
-		{
+		} else {
 			this.audioPlayer.play();
 			playButton.setBackgroundResource(R.drawable.selector_pause_button);
 			// Defines default values for the seekbar
-			updateProgressBar();			
-		}
-	}
-	
-	public void nextMusic(){
-		if(this.selectedMusic + 1 > this.musics.size())
-		{
-			// Reached the end of the list
-		}
-		else
-		{
-			this.selectedMusic++;
-			this.audioPlayer.stop();
-			initMusic();
-		}
-	}
-	
-	public void previousMusic(){
-		if(this.selectedMusic - 1 < 0)
-		{
-			// Reached the beginning of the list
-		}
-		else
-		{
-			this.selectedMusic--;
-			this.audioPlayer.stop();
-			initMusic();
+			updateProgressBar();
 		}
 	}
 
-	/*
-	 * public void forwardMusic() { int currentPosition =
-	 * audioPlayer.getCurrentPosition(); int duration =
-	 * audioPlayer.getDuration(); int goToPosition = currentPosition +
-	 * FORWARD_SECONDS; if (goToPosition <= duration)
-	 * audioPlayer.seekTo(goToPosition); else audioPlayer.seekTo(duration);
-	 * 
-	 * Log.d("simon", "test forward done " + goToPosition);
-	 * 
-	 * }
-	 * 
-	 * public void backwardMusic() { int currentPosition =
-	 * audioPlayer.getCurrentPosition(); int goToPosition = currentPosition -
-	 * BACKWARD_SECONDS; if (goToPosition >= 0)
-	 * audioPlayer.seekTo(goToPosition); else audioPlayer.seekTo(0);
-	 * Log.d("simon", "test backward done " + goToPosition); }
-	 */
+	public void playNext() {
+		
+		boolean flag = false;
+		// Check if a music is playing
+		if(this.audioPlayer.isPlaying())
+			flag = true;
+		
+		if (selectedMusic + 1 >= this.musics.size()) {
+			// Reach the end of the music list
+		} else {
+			selectedMusic++;
+			this.audioPlayer.loading(musics.get(selectedMusic));
+			this.playMusic();
+			refresh();// refresh the display
+			
+			mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
+		}	
+	}
+
+	public void playPrevious() {
+		
+		boolean flag = false;
+		if(this.audioPlayer.isPlaying())
+			flag = true;
+		
+		if (selectedMusic - 1 <= 0) {
+			// Reach the beginning of the music list
+		} else {
+			selectedMusic--;
+			this.audioPlayer.loading(musics.get(selectedMusic));
+			if(flag)
+				this.playMusic();
+			refresh(); // refresh the display
+			mCallBackEvent.onChangeE(Orders.PREVIOUS, selectedMusic);
+		}
+	}
 
 	// Update the progressbar, see progressBarUpdateTime
 	public void updateProgressBar() {
@@ -294,14 +295,11 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		musicHandler.removeCallbacks(progressBarUpdateTime);
 		audioPlayer.pause();
 		super.onPause();
-
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-
 	}
-
 }

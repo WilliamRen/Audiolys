@@ -3,9 +3,7 @@ package media.player.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import media.player.models.Music;
-
 import android.os.Environment;
 import android.util.Log;
 
