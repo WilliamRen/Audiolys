@@ -30,7 +30,15 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	List<HashMap<String, Object>> listItem;
 	ArrayList<Music> musics;
 	ListView listMusic;
-   
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+        
+        return true;
+    }
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);        
@@ -50,7 +58,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 					new String[] {"image", "title", "group"}, new int[] {
 							R.id.imageViewBitmap, R.id.musictitle, R.id.musicband});
 	        listMusic = (ListView) findViewById(R.id.listView_music);
-	       // listAdapter.setViewBinder(viewBinder);
 	        listMusic.setAdapter(listAdapter);
 	        listMusic.setOnItemClickListener(this);
 		} catch (InterruptedException e) {
@@ -63,7 +70,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
     //Create a HashMap
     private List<HashMap<String, Object>> toMap() {
     	ArrayList<HashMap<String, Object>> listMusic = new ArrayList<HashMap<String, Object>>();
-		BitmapFactory.Options options = new BitmapFactory.Options();
 		for (Music music : musics) {
 				HashMap<String, Object> hm = new HashMap<String, Object>();
 				hm.put("title", music.getTitle());
@@ -73,27 +79,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		}
 		return listMusic;
 	}
-    
-  //Create a HashMap
-//    private ArrayList<HashMap<String, String>> toHashMap() {
-//		ArrayList<HashMap<String, String>> listMusic = new ArrayList<HashMap<String,String>>();
-//		for (Music music : musics) {
-//				HashMap<String, String> hm = new HashMap<String, String>();
-//				hm.put("title", music.getTitle());
-//				hm.put("group", music.getBand());
-//				hm.put("image", music.getImage());
-//				listMusic.add(hm);
-//		}
-//		return listMusic;
-//	}
 
-
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+	
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -106,9 +93,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			data.putSerializable("listMusics", musics);
 			data.putInt("selectedMusic", arg2);
 			playerIntent.putExtras(data);
-			
-			
-			
+						
 			startActivity(playerIntent);
 			overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			break;

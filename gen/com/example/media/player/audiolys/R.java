@@ -32,7 +32,7 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
-        public static final int logo2=0x7f020001;
+        public static final int logo=0x7f020001;
         public static final int next_button_pushed=0x7f020002;
         public static final int next_button_released=0x7f020003;
         public static final int pause_button_pushed=0x7f020004;
@@ -47,7 +47,8 @@ public final class R {
         public static final int selector_previous_button=0x7f02000d;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000e;
+        public static final int action_refresh=0x7f09000e;
+        public static final int action_settings=0x7f09000f;
         public static final int audio_fragment=0x7f090002;
         public static final int imageViewBitmap=0x7f09000a;
         public static final int imageViewNextButton=0x7f090009;
