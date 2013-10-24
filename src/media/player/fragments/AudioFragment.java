@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AudioFragment extends Fragment implements OnClickListener,
 		SeekBar.OnSeekBarChangeListener {

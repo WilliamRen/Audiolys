@@ -9,11 +9,9 @@ import media.player.fragments.AudioFragment.onChangeEvents;
 import media.player.fragments.ViewerFragment;
 import media.player.models.Music;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Button;
 
 public class AudioActivity extends Activity implements onChangeEvents {
 
@@ -67,5 +65,5 @@ public class AudioActivity extends Activity implements onChangeEvents {
 			break;
 		}
 	}
-
 }
+

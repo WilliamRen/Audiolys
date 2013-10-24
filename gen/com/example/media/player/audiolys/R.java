@@ -49,7 +49,7 @@ public final class R {
     public static final class id {
         public static final int action_settings=0x7f09000e;
         public static final int audio_fragment=0x7f090002;
-        public static final int imageView1=0x7f09000a;
+        public static final int imageViewBitmap=0x7f09000a;
         public static final int imageViewNextButton=0x7f090009;
         public static final int imageViewPlayButton=0x7f090008;
         public static final int imageViewPreviousButton=0x7f090007;
