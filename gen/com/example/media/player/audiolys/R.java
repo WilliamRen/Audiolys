@@ -60,7 +60,7 @@ public final class R {
         public static final int textViewMusicCurrentPosition=0x7f090005;
         public static final int textViewMusicName=0x7f090003;
         public static final int textViewMusicTotalDuration=0x7f090006;
-        public static final int viewSwitcherCase=0x7f09000d;
+        public static final int viewFlipperCase=0x7f09000d;
         public static final int viewer_fragment=0x7f090001;
     }
     public static final class layout {

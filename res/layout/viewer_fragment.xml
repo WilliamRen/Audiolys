@@ -2,20 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="center"
     android:orientation="vertical" >
 
-    <!--     <ViewSwitcher
+    <!--
+    <ViewSwitcher
         android:layout_marginTop="40dp"
         android:id="@+id/viewSwitcherCase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-    </ViewSwitcher>-->
-    
-     <ViewFlipper
-        android:layout_marginTop="40dp"
-        android:id="@+id/viewSwitcherCase"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    </ViewSwitcher>
+    -->
+
+    <ViewFlipper
+        android:id="@+id/viewFlipperCase"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:addStatesFromChildren="true"
+        android:gravity="center" >
     </ViewFlipper>
 
 </LinearLayout>

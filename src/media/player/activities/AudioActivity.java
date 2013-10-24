@@ -65,5 +65,13 @@ public class AudioActivity extends Activity implements onChangeEvents {
 			break;
 		}
 	}
+	
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		super.finish();
+		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
+
 }
 
