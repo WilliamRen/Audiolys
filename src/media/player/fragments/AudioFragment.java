@@ -32,6 +32,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private TextView textViewCurrentPosition;
 	private TextView textviewTotalDuration;
 	private TextView textViewMusicName;
+	private TextView textViewNumberTracks;
 	private ImageView playButton;
 	private ImageView nextButton;
 	private ImageView previousButton;
@@ -70,6 +71,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Bind Java code and XML
 		progressBarMusic = (SeekBar) v.findViewById(R.id.seekBarAudio);
 		textViewMusicName = (TextView) v.findViewById(R.id.textViewMusicName);
+		textViewNumberTracks = (TextView) v.findViewById(R.id.textViewNumberTracks);
 		textViewCurrentPosition = (TextView) v
 				.findViewById(R.id.textViewMusicCurrentPosition);
 		textviewTotalDuration = (TextView) v
@@ -181,6 +183,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	public void refresh() {
 		textViewMusicName.setText(this.musics.get(selectedMusic).getTitle());
+		textViewNumberTracks.setText("Track "+selectedMusic+"/"+musics.size());
 		this.progressBarMusic.setMax(100);
 		this.progressBarMusic.setProgress(0);
 	}

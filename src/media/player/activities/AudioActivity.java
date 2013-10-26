@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.WindowManager;
 
 public class AudioActivity extends Activity implements onChangeEvents {
 
@@ -23,7 +24,8 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_music);
-
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // prevent app from sleeping
+		
 		musics = (ArrayList<Music>) getIntent().getExtras()
 				.getSerializable("listMusics");
 		int selectedMusic = getIntent().getExtras().getInt("selectedMusic");

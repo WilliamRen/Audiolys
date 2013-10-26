@@ -47,21 +47,22 @@ public final class R {
         public static final int selector_previous_button=0x7f02000d;
     }
     public static final class id {
-        public static final int action_refresh=0x7f09000e;
-        public static final int action_settings=0x7f09000f;
+        public static final int action_refresh=0x7f09000f;
+        public static final int action_settings=0x7f090010;
         public static final int audio_fragment=0x7f090002;
-        public static final int imageViewBitmap=0x7f09000a;
-        public static final int imageViewNextButton=0x7f090009;
-        public static final int imageViewPlayButton=0x7f090008;
-        public static final int imageViewPreviousButton=0x7f090007;
+        public static final int imageViewBitmap=0x7f09000b;
+        public static final int imageViewNextButton=0x7f09000a;
+        public static final int imageViewPlayButton=0x7f090009;
+        public static final int imageViewPreviousButton=0x7f090008;
         public static final int listView_music=0x7f090000;
-        public static final int musicband=0x7f09000c;
-        public static final int musictitle=0x7f09000b;
-        public static final int seekBarAudio=0x7f090004;
-        public static final int textViewMusicCurrentPosition=0x7f090005;
+        public static final int musicband=0x7f09000d;
+        public static final int musictitle=0x7f09000c;
+        public static final int seekBarAudio=0x7f090005;
+        public static final int textViewMusicCurrentPosition=0x7f090006;
         public static final int textViewMusicName=0x7f090003;
-        public static final int textViewMusicTotalDuration=0x7f090006;
-        public static final int viewFlipperCase=0x7f09000d;
+        public static final int textViewMusicTotalDuration=0x7f090007;
+        public static final int textViewNumberTracks=0x7f090004;
+        public static final int viewFlipperCase=0x7f09000e;
         public static final int viewer_fragment=0x7f090001;
     }
     public static final class layout {

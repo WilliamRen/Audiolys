@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
@@ -14,12 +14,23 @@
             android:id="@+id/textViewMusicName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/textViewNumberTracks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp" />
 
         <SeekBar
             android:id="@+id/seekBarAudio"
             android:layout_width="match_parent"
             android:layout_height="0dip"
+            android:layout_marginTop="35dp"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -32,13 +43,15 @@
         <TextView
             android:id="@+id/textViewMusicCurrentPosition"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
 
         <TextView
             android:id="@+id/textViewMusicTotalDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -55,11 +68,20 @@
             android:contentDescription="@string/previous_button"
             android:src="@drawable/selector_previous_button" />
 
-        <ImageView
+        <!--
+              <ImageView
             android:id="@+id/imageViewPlayButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="0.01"
+            android:background="@drawable/selector_play_button"
+            android:contentDescription="@string/play_button" />
+        -->
+
+        <ImageView
+            android:id="@+id/imageViewPlayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/selector_play_button"
             android:contentDescription="@string/play_button" />
 
