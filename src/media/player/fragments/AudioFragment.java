@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class AudioFragment extends Fragment implements OnClickListener,
 		SeekBar.OnSeekBarChangeListener {
@@ -36,9 +35,17 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private ImageView playButton;
 	private ImageView nextButton;
 	private ImageView previousButton;
+	private ImageView repeatButton;
+	private ImageView shuffleButton;
 	private onChangeEvents mCallBackEvent;
 	private ArrayList<Music> musics = new ArrayList<Music>();
 	private int selectedMusic = -1;
+	private Repeat isRepeating = Repeat.NONE;
+	private boolean isShuffling = false;
+
+	public enum Repeat {
+		NONE, ONE, ALL;
+	}
 
 	public enum Orders {
 		PLAY, PAUSE, NEXT, PREVIOUS;
@@ -49,16 +56,16 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	public interface onChangeEvents {
 		public void onChangeE(Orders o, int selectedMusic);
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
-	    super.onAttach(activity);
-	    try {
-	    	mCallBackEvent = (onChangeEvents) activity;
-	    } catch (ClassCastException e) {
-	        throw new ClassCastException(activity.toString()
-	                + " must implement OnNavButtonClickListener");
-	    }
+		super.onAttach(activity);
+		try {
+			mCallBackEvent = (onChangeEvents) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnNavButtonClickListener");
+		}
 	}
 
 	@Override
@@ -71,7 +78,8 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Bind Java code and XML
 		progressBarMusic = (SeekBar) v.findViewById(R.id.seekBarAudio);
 		textViewMusicName = (TextView) v.findViewById(R.id.textViewMusicName);
-		textViewNumberTracks = (TextView) v.findViewById(R.id.textViewNumberTracks);
+		textViewNumberTracks = (TextView) v
+				.findViewById(R.id.textViewNumberTracks);
 		textViewCurrentPosition = (TextView) v
 				.findViewById(R.id.textViewMusicCurrentPosition);
 		textviewTotalDuration = (TextView) v
@@ -80,13 +88,18 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		nextButton = (ImageView) v.findViewById(R.id.imageViewNextButton);
 		previousButton = (ImageView) v
 				.findViewById(R.id.imageViewPreviousButton);
+		repeatButton = (ImageView) v.findViewById(R.id.imageViewRepeat);
+		shuffleButton = (ImageView) v.findViewById(R.id.imageViewShuffle);
 
 		// Set a listener on buttons
 		playButton.setOnClickListener(this);
 		nextButton.setOnClickListener(this);
 		previousButton.setOnClickListener(this);
+		repeatButton.setOnClickListener(this);
+		shuffleButton.setOnClickListener(this);
 
 		progressBarMusic.setOnSeekBarChangeListener(this);
+		textViewMusicName.setSelected(true); // make the text moving
 
 		// Set an audio manager + context
 		AudioManager am = (AudioManager) getActivity().getSystemService(
@@ -100,10 +113,10 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	// Receive data from AudioActivity
 	public void sendData(ArrayList<Music> musics, int selectedMusic) {
-		
+
 		this.selectedMusic = selectedMusic;
 		this.musics = musics;
-		
+
 		this.audioPlayer.loading(musics.get(selectedMusic));
 		refresh();
 		playMusic();
@@ -117,6 +130,8 @@ public class AudioFragment extends Fragment implements OnClickListener,
 						playNext();
 					}
 				});
+
+		
 	}
 
 	/*********************************************************************************/
@@ -141,6 +156,14 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Click on previous button
 		case R.id.imageViewPreviousButton:
 			playPrevious();
+			break;
+
+		case R.id.imageViewRepeat:
+			repeatSongs();
+			break;
+
+		case R.id.imageViewShuffle:
+			shuffleSongs();
 			break;
 
 		default:
@@ -183,17 +206,38 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	public void refresh() {
 		textViewMusicName.setText(this.musics.get(selectedMusic).getTitle());
-		textViewNumberTracks.setText("Track "+selectedMusic+"/"+musics.size());
+		textViewNumberTracks.setText("Track " + (selectedMusic + 1) + "/"
+				+ musics.size());
+		positionInTracks();
 		this.progressBarMusic.setMax(100);
 		this.progressBarMusic.setProgress(0);
 	}
 
-	public void initMusic() {
-		// Log.w("simon",String.valueOf(selectedMusic));
-		// audioPlayer.loading(musics.get(selectedMusic));
+	public void positionInTracks() {
+		// + 2
+		// - selectedMusic starts from 0 while musics.size() counts the number
+		// of rows
+		// - we want to know if selectedMusic goes over musics.size()
+		this.nextButton.setImageResource(0);
+		this.nextButton.setBackgroundResource(0);
+		this.previousButton.setImageResource(0);
+		this.previousButton.setBackgroundResource(0);
 
-		updateProgressBar();
-		// playMusic();
+		if (selectedMusic + 2 > musics.size()) {
+			this.nextButton.setImageResource(R.drawable.next_button_grey);
+			this.previousButton
+					.setBackgroundResource(R.drawable.selector_previous_button);
+		} else if (selectedMusic - 1 < 0) {
+			this.previousButton
+					.setImageResource(R.drawable.previous_button_grey);
+			this.nextButton
+					.setBackgroundResource(R.drawable.selector_next_button);
+		} else {
+			this.nextButton
+					.setBackgroundResource(R.drawable.selector_next_button);
+			this.previousButton
+					.setBackgroundResource(R.drawable.selector_previous_button);
+		}
 	}
 
 	// Function called when a music is about to be playing
@@ -213,40 +257,54 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	}
 
 	public void playNext() {
-		
+
 		boolean flag = false;
 		// Check if a music is playing
-		if(this.audioPlayer.isPlaying())
+		if (this.audioPlayer.isPlaying())
 			flag = true;
-		
-		if (selectedMusic + 1 >= this.musics.size()) {
-			// Reach the end of the music list
-		} else {
-			selectedMusic++;
-			this.audioPlayer.loading(musics.get(selectedMusic));
-			this.playMusic();
-			refresh();// refresh the display
+
+		if ((selectedMusic + 2) > this.musics.size()) {
 			
-			mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
-		}	
+			// Make the whole list of songs playing again
+			if(isRepeating.equals(Repeat.ALL))
+			{
+				selectedMusic = -1;
+				playNext();
+			}
+			
+		} else {
+			
+			if(isRepeating.equals(Repeat.NONE) || isRepeating.equals(Repeat.ALL))
+			{
+				selectedMusic++;
+				this.audioPlayer.loading(musics.get(selectedMusic));
+				this.audioPlayer.play();
+				refresh();// refresh the display
+				mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
+			}
+		}
+		positionInTracks();
 	}
 
 	public void playPrevious() {
-		
+
 		boolean flag = false;
-		if(this.audioPlayer.isPlaying())
+		if (this.audioPlayer.isPlaying())
 			flag = true;
-		
-		if (selectedMusic - 1 <= 0) {
+
+		if (selectedMusic - 1 < 0) {
 			// Reach the beginning of the music list
 		} else {
+			this.previousButton
+					.setBackgroundResource(R.drawable.previous_button_released);
 			selectedMusic--;
 			this.audioPlayer.loading(musics.get(selectedMusic));
-			if(flag)
+			if (flag)
 				this.playMusic();
 			refresh(); // refresh the display
 			mCallBackEvent.onChangeE(Orders.PREVIOUS, selectedMusic);
 		}
+		positionInTracks();
 	}
 
 	// Update the progressbar, see progressBarUpdateTime
@@ -278,6 +336,37 @@ public class AudioFragment extends Fragment implements OnClickListener,
 			musicHandler.postDelayed(this, 100);
 		}
 	};
+
+	public void repeatSongs() {
+
+		this.repeatButton.setImageResource(0);
+		switch (isRepeating) {
+
+		// Change from "repeat nothing" state to "repeat just one"
+		case NONE:
+			this.repeatButton.setImageResource(R.drawable.repeatone);
+			this.audioPlayer.repeat(true);
+			isRepeating = Repeat.ONE;
+			break;
+			
+		// Change from "repeat just one" state to "repeat all"
+		case ONE:
+			this.repeatButton.setImageResource(R.drawable.repeat);
+			this.audioPlayer.repeat(false);
+			isRepeating = Repeat.ALL;
+			break;
+
+		// Change from "repeat all" state to "repeat nothing"
+		case ALL:
+			isRepeating = Repeat.NONE;
+			this.repeatButton.setImageResource(R.drawable.repeat_button_released);
+			break;
+		}
+	}
+
+	public void shuffleSongs() {
+
+	}
 
 	/*********************************************************************************/
 	/** End of required methods related to audio playing **/

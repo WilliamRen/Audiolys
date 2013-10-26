@@ -12,9 +12,14 @@
 
         <TextView
             android:id="@+id/textViewMusicName"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+            android:marqueeRepeatLimit="marquee_forever"
             android:textSize="20sp"
             android:textStyle="bold"
             android:typeface="serif" />
@@ -62,11 +67,17 @@
         android:orientation="horizontal" >
 
         <ImageView
+            android:id="@+id/imageViewRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/repeat_button"
+            android:src="@drawable/repeat_button_released" />
+
+        <ImageView
             android:id="@+id/imageViewPreviousButton"
-            android:layout_width="89dp"
-            android:layout_height="45dp"
-            android:contentDescription="@string/previous_button"
-            android:src="@drawable/selector_previous_button" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/previous_button" />
 
         <!--
               <ImageView
@@ -87,10 +98,16 @@
 
         <ImageView
             android:id="@+id/imageViewNextButton"
-            android:layout_width="89dp"
-            android:layout_height="45dp"
-            android:contentDescription="@string/next_button"
-            android:src="@drawable/selector_next_button" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/next_button" />
+
+        <ImageView
+            android:id="@+id/imageViewShuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/shuffle_button"
+            android:src="@drawable/shuffle_button_released" />
     </LinearLayout>
 
 </LinearLayout>

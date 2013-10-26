@@ -6,4 +6,6 @@
     <string name="play_button">Play button</string>
     <string name="previous_button">Previous button</string>
     <string name="next_button">Next button</string>
+    <string name="shuffle_button">Shuffle button</string>
+    <string name="repeat_button">Repeat button</string>
 </resources>

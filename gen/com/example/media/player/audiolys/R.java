@@ -33,36 +33,46 @@ public final class R {
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int logo=0x7f020001;
-        public static final int next_button_pushed=0x7f020002;
-        public static final int next_button_released=0x7f020003;
-        public static final int pause_button_pushed=0x7f020004;
-        public static final int pause_button_released=0x7f020005;
-        public static final int play_button_pushed=0x7f020006;
-        public static final int play_button_released=0x7f020007;
-        public static final int previous_button_pushed=0x7f020008;
-        public static final int previous_button_released=0x7f020009;
-        public static final int selector_next_button=0x7f02000a;
-        public static final int selector_pause_button=0x7f02000b;
-        public static final int selector_play_button=0x7f02000c;
-        public static final int selector_previous_button=0x7f02000d;
+        public static final int next_button_grey=0x7f020002;
+        public static final int next_button_pushed=0x7f020003;
+        public static final int next_button_released=0x7f020004;
+        public static final int pause_button_pushed=0x7f020005;
+        public static final int pause_button_released=0x7f020006;
+        public static final int play_button_pushed=0x7f020007;
+        public static final int play_button_released=0x7f020008;
+        public static final int previous_button_grey=0x7f020009;
+        public static final int previous_button_pushed=0x7f02000a;
+        public static final int previous_button_released=0x7f02000b;
+        public static final int repeat=0x7f02000c;
+        public static final int repeat_button_pressed=0x7f02000d;
+        public static final int repeat_button_released=0x7f02000e;
+        public static final int repeatone=0x7f02000f;
+        public static final int selector_next_button=0x7f020010;
+        public static final int selector_pause_button=0x7f020011;
+        public static final int selector_play_button=0x7f020012;
+        public static final int selector_previous_button=0x7f020013;
+        public static final int shuffle=0x7f020014;
+        public static final int shuffle_button_released=0x7f020015;
     }
     public static final class id {
-        public static final int action_refresh=0x7f09000f;
-        public static final int action_settings=0x7f090010;
+        public static final int action_refresh=0x7f090011;
+        public static final int action_settings=0x7f090012;
         public static final int audio_fragment=0x7f090002;
-        public static final int imageViewBitmap=0x7f09000b;
-        public static final int imageViewNextButton=0x7f09000a;
-        public static final int imageViewPlayButton=0x7f090009;
-        public static final int imageViewPreviousButton=0x7f090008;
+        public static final int imageViewBitmap=0x7f09000d;
+        public static final int imageViewNextButton=0x7f09000b;
+        public static final int imageViewPlayButton=0x7f09000a;
+        public static final int imageViewPreviousButton=0x7f090009;
+        public static final int imageViewRepeat=0x7f090008;
+        public static final int imageViewShuffle=0x7f09000c;
         public static final int listView_music=0x7f090000;
-        public static final int musicband=0x7f09000d;
-        public static final int musictitle=0x7f09000c;
+        public static final int musicband=0x7f09000f;
+        public static final int musictitle=0x7f09000e;
         public static final int seekBarAudio=0x7f090005;
         public static final int textViewMusicCurrentPosition=0x7f090006;
         public static final int textViewMusicName=0x7f090003;
         public static final int textViewMusicTotalDuration=0x7f090007;
         public static final int textViewNumberTracks=0x7f090004;
-        public static final int viewFlipperCase=0x7f09000e;
+        public static final int viewFlipperCase=0x7f090010;
         public static final int viewer_fragment=0x7f090001;
     }
     public static final class layout {
@@ -82,6 +92,8 @@ public final class R {
         public static final int next_button=0x7f060005;
         public static final int play_button=0x7f060003;
         public static final int previous_button=0x7f060004;
+        public static final int repeat_button=0x7f060007;
+        public static final int shuffle_button=0x7f060006;
     }
     public static final class style {
         /** 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import media.player.fragments.AudioFragment;
+import media.player.fragments.AudioFragment.Repeat;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -117,6 +118,11 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener, OnC
 
 	public void seekTo(int currentPosition) {
 		mediaPlayer.seekTo(currentPosition);
+	}
+	
+	public void repeat(boolean state)
+	{
+		this.mediaPlayer.setLooping(state);
 	}
 
 	@Override
