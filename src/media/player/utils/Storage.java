@@ -3,8 +3,11 @@ package media.player.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import media.player.models.Band;
 import media.player.models.Music;
 import android.os.Environment;
+import android.provider.ContactsContract.Directory;
 import android.util.Log;
 
 public class Storage {
@@ -13,6 +16,7 @@ public class Storage {
 		NOTAVAILABLE, MOUNTED, READONLY, WRITEABLE;
 	}
 
+	//Checking if the external storage is plugged and ready to use
 	public static State checkStorage() {
 		String state = Environment.getExternalStorageState();
 		State returnState = State.NOTAVAILABLE;
@@ -26,23 +30,30 @@ public class Storage {
 		return returnState;
 	}
 
+	//Get a list of musics
 	public static ArrayList<Music> getFiles(File directory) {
 		ArrayList<Music> awl = new ArrayList<Music>();
 		for (File f : directory.listFiles()) {
-			//Log.d("music", f.getAbsolutePath());
 			if (f.isDirectory()) {
 				awl.addAll(getFiles(f));
 			} else if (f.isFile() && isAudioFile(f)) {
-				//Log.d("cover", getAlbumCover(f.getParentFile()).getAbsolutePath());
-				//File cover = f.getParentFile();
 				File music = f;
-				//String parent = f.getParentFile().getAbsolutePath();
 				Music aw = new Music(music);
-				//Log.d("Music Item", aw.toString());
 				awl.add(aw);
 			}
 		}
 		return awl;
+	}
+	
+	//Get a list of folders in the music directory on the phone
+	public static ArrayList<Band> getFolders(File directory) {
+		ArrayList<Band> directories = new ArrayList<Band>();
+		for (File f : directory.listFiles()) {
+			if (f.isDirectory()) {
+				directories.add(new Band(f));
+			} 
+		}
+		return directories;
 	}
 
 	// Is the file a music?!
@@ -64,7 +75,6 @@ public class Storage {
 				returnFile = s;
 			}
 		}
-		Log.d("music", "test" + returnFile);
 		return returnFile;
 	}
 }
