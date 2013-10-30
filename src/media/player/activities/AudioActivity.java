@@ -8,8 +8,13 @@ import media.player.fragments.AudioFragment.Orders;
 import media.player.fragments.AudioFragment.onChangeEvents;
 import media.player.fragments.ViewerFragment;
 import media.player.models.Music;
+import media.player.models.ShakeDetector;
+import media.player.models.ShakeDetector.OnShakeListener;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,14 +26,14 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	ViewerFragment viewerFragment = null;
 	ArrayList<Music> musics;
 
+
 	@SuppressWarnings("unchecked")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_music);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // prevent
-																				// app
-																				// from
-																				// sleeping
+		
+		// prevent app from sleeping
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		musics = (ArrayList<Music>) getIntent().getExtras().getSerializable(
 				"listMusics");
@@ -87,10 +92,21 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	}
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+	
+	@Override
 	public void finish() {
 		// TODO Auto-generated method stub
 		super.finish();
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
-
 }

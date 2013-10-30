@@ -6,10 +6,14 @@ import java.util.Random;
 import com.example.media.player.audiolys.R;
 import media.player.models.AudioPlayer;
 import media.player.models.Music;
+import media.player.models.ShakeDetector;
+import media.player.models.ShakeDetector.OnShakeListener;
 import media.player.utils.MediaUtils;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -44,6 +48,12 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private int selectedMusic = -1;
 	private Repeat isRepeating = Repeat.NONE;
 	private boolean isShuffling = false;
+	
+	
+	// The following are used for the shake detection
+		private SensorManager mSensorManager;
+		private Sensor mAccelerometer;
+		private ShakeDetector mShakeDetector;
 
 	public enum Repeat {
 		NONE, ONE, ALL;
@@ -112,6 +122,26 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				Context.AUDIO_SERVICE);
 
 		audioPlayer = new AudioPlayer(am);
+		
+		// ShakeDetector initialization
+		mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new OnShakeListener() {
+ 
+            @Override
+            public void onShake(int count) {
+                /*
+                 * The following method, "handleShakeEvent(count):" is a stub //
+                 * method you would use to setup whatever you want done once the
+                 * device has been shook.
+                 */
+                //handleShakeEvent(count);
+            	selectedMusic = giveMeARandomNumber(0, musics.size()-1);
+            	playNext(Event.PUSH);
+            }
+        });
 
 		// Return view
 		return v;
@@ -453,6 +483,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// TODO Auto-generated method stub
 
 		Log.w("simon", "pause");
+		mSensorManager.unregisterListener(mShakeDetector);
 		musicHandler.removeCallbacks(progressBarUpdateTime);
 		audioPlayer.pause();
 		playButton.setBackgroundResource(R.drawable.selector_play_button);
@@ -463,6 +494,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
+		mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
 		Log.w("simon", "resume");
 		Log.w("simon", "finish resume");
 		super.onResume();
