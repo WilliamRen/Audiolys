@@ -1,6 +1,8 @@
 package media.player.fragments;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import com.example.media.player.audiolys.R;
 import media.player.models.AudioPlayer;
 import media.player.models.Music;
@@ -272,7 +274,10 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				selectedMusic = -1;
 				playNext(Event.END);
 			} else {
-				selectedMusic++;
+				if(isShuffling)
+					selectedMusic = giveMeARandomNumber(0, musics.size()-1);
+				else
+					selectedMusic++;
 				this.audioPlayer.loading(musics.get(selectedMusic));
 				if (flag)
 					this.audioPlayer.play();
@@ -302,7 +307,11 @@ public class AudioFragment extends Fragment implements OnClickListener,
 			if ((selectedMusic + 2) > this.musics.size()) { // Reach the end of the list
 				this.playButton.setBackgroundResource(R.drawable.selector_play_button);
 			} else {
-				selectedMusic++;
+				if(isShuffling)
+					selectedMusic = giveMeARandomNumber(0, musics.size()-1);
+				else
+					selectedMusic++;
+				
 				this.audioPlayer.loading(musics.get(selectedMusic));
 				if (flag)
 					this.audioPlayer.play();
@@ -370,19 +379,22 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	public void repeatSongs() {
 
-		this.repeatButton.setImageResource(0);
+		//this.repeatButton.setImageResource(0);
+		this.repeatButton.setBackgroundResource(0);
 		switch (isRepeating) {
 
 		// Change from "repeat nothing" state to "repeat just one"
 		case NONE:
-			this.repeatButton.setImageResource(R.drawable.repeatone);
+			//this.repeatButton.setImageResource(R.drawable.repeatone);
+			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_one_button);
 			this.audioPlayer.repeat(true);
 			isRepeating = Repeat.ONE;
 			break;
 
 		// Change from "repeat just one" state to "repeat all"
 		case ONE:
-			this.repeatButton.setImageResource(R.drawable.repeat);
+			//this.repeatButton.setImageResource(R.drawable.repeat);
+			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_all_button);
 			this.audioPlayer.repeat(false);
 			isRepeating = Repeat.ALL;
 			break;
@@ -390,14 +402,33 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Change from "repeat all" state to "repeat nothing"
 		case ALL:
 			isRepeating = Repeat.NONE;
-			this.repeatButton
-					.setImageResource(R.drawable.repeat_button_released);
+			//this.repeatButton
+			//		.setImageResource(R.drawable.repeat_button_released);
+			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_button);
 			break;
 		}
 	}
 
 	public void shuffleSongs() {
 
+		if(isShuffling)
+		{
+			shuffleButton.setBackgroundResource(R.drawable.selector_shuffle_button);
+			isShuffling = false;
+		}
+		else
+		{
+			shuffleButton.setBackgroundResource(R.drawable.selector_shuffle_on_button);
+			isShuffling = true;
+
+		}
+	}
+	
+	public int giveMeARandomNumber(int min, int max)
+	{
+		Random r = new Random();
+		int rand= r.nextInt(max - min + 1) + min;
+		return rand;
 	}
 
 	/********************************************************************************

@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/repeat_button"
-            android:src="@drawable/repeat_button_released" />
+            android:background="@drawable/selector_repeat_button" />
 
         <ImageView
             android:id="@+id/imageViewPreviousButton"
@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/shuffle_button"
-            android:src="@drawable/shuffle_button_released" />
+            android:background="@drawable/selector_shuffle_button"/>
     </LinearLayout>
 
 </LinearLayout>
