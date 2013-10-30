@@ -40,39 +40,38 @@ public class ViewerFragment extends Fragment {
 
 		if (path != null) {
 			
+			// Create an image - specific size - convert to bitmap
 			ImageView image = new ImageView(getActivity().getApplicationContext());
 			image.setPadding(100, 100, 100, 100);
 			Bitmap bitmap = new BitmapFactory().decodeFile(path);
 			image.setImageBitmap(bitmap);
 			vf.addView(image);
 			bitmapList.add(bitmap);
-
 			
 			switch (o) {
 			case NEXT:
+				// Transition effect - next
 				AnimationFactory.flipTransition(vf, FlipDirection.RIGHT_LEFT);
 				break;
 
 			case PREVIOUS:
+				// Transition effect - previous
 				AnimationFactory.flipTransition(vf, FlipDirection.LEFT_RIGHT);
 				break;
 
 			default:
+				// First one - no effect
 				vf.showNext();
 				break;
 			}
 			
+			// Removing view from the flipper/list + recycling
 			if(vf.getChildCount() > 2)
 			{
-				Log.w("simon","supérieur à 2");
 				vf.removeViewAt(0);
 				Log.w("simon", ""+bitmapList.size());
 				bitmapList.get(0).recycle();
 				bitmapList.remove(0);
-			}
-			else
-			{
-				Log.w("simon","inférieur à 2");
 			}
 		}
 	}

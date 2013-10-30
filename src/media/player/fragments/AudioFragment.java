@@ -51,6 +51,10 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		PLAY, PAUSE, NEXT, PREVIOUS;
 	}
 
+	public enum Event {
+		PUSH, END;
+	}
+
 	/* EOVariables */
 
 	public interface onChangeEvents {
@@ -127,11 +131,9 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 					public void onCompletion(MediaPlayer mp) {
 						// TODO Auto-generated method stub
-						playNext();
+						playNext(Event.END);
 					}
 				});
-
-		
 	}
 
 	/*********************************************************************************/
@@ -150,7 +152,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 		// Click on next button
 		case R.id.imageViewNextButton:
-			playNext();
+			playNext(Event.PUSH);
 			break;
 
 		// Click on previous button
@@ -242,7 +244,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	// Function called when a music is about to be playing
 	public void playMusic() {
-
 		// is the player playing?
 		if (this.audioPlayer.isPlaying()) {
 			// Change play to pause button
@@ -256,29 +257,56 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		}
 	}
 
-	public void playNext() {
+	public void playNext(Event ev) {
 
 		boolean flag = false;
 		// Check if a music is playing
-		if (this.audioPlayer.isPlaying())
+		if (this.audioPlayer.isPlaying() || ev.equals(Event.END))
 			flag = true;
 
-		if ((selectedMusic + 2) > this.musics.size()) {
-			
-			// Make the whole list of songs playing again
-			if(isRepeating.equals(Repeat.ALL))
-			{
+		// Which type of repeat
+		if (isRepeating.equals(Repeat.ALL)) {
+
+			// Reach the end of the list
+			if ((selectedMusic + 2) > this.musics.size()) {
 				selectedMusic = -1;
-				playNext();
-			}
-			
-		} else {
-			
-			if(isRepeating.equals(Repeat.NONE) || isRepeating.equals(Repeat.ALL))
-			{
+				playNext(Event.END);
+			} else {
 				selectedMusic++;
 				this.audioPlayer.loading(musics.get(selectedMusic));
-				this.audioPlayer.play();
+				if (flag)
+					this.audioPlayer.play();
+
+				refresh();// refresh the display
+				mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
+			}
+		} else if (isRepeating.equals(Repeat.ONE)) {
+
+			if ((selectedMusic + 2) > this.musics.size()) {
+
+			} else {
+				if (ev.equals(Event.PUSH)) {
+					selectedMusic++;
+					this.audioPlayer.loading(musics.get(selectedMusic));
+					if (flag)
+						this.audioPlayer.play();
+
+					refresh();// refresh the display
+					mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
+				}
+				this.audioPlayer.repeat(true);
+			}
+
+		} else {
+			
+			if ((selectedMusic + 2) > this.musics.size()) { // Reach the end of the list
+				this.playButton.setBackgroundResource(R.drawable.selector_play_button);
+			} else {
+				selectedMusic++;
+				this.audioPlayer.loading(musics.get(selectedMusic));
+				if (flag)
+					this.audioPlayer.play();
+
 				refresh();// refresh the display
 				mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
 			}
@@ -303,6 +331,9 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				this.playMusic();
 			refresh(); // refresh the display
 			mCallBackEvent.onChangeE(Orders.PREVIOUS, selectedMusic);
+
+			if (isRepeating.equals(Repeat.ONE))
+				this.audioPlayer.repeat(true);
 		}
 		positionInTracks();
 	}
@@ -348,7 +379,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 			this.audioPlayer.repeat(true);
 			isRepeating = Repeat.ONE;
 			break;
-			
+
 		// Change from "repeat just one" state to "repeat all"
 		case ONE:
 			this.repeatButton.setImageResource(R.drawable.repeat);
@@ -359,7 +390,8 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Change from "repeat all" state to "repeat nothing"
 		case ALL:
 			isRepeating = Repeat.NONE;
-			this.repeatButton.setImageResource(R.drawable.repeat_button_released);
+			this.repeatButton
+					.setImageResource(R.drawable.repeat_button_released);
 			break;
 		}
 	}
@@ -368,8 +400,9 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	}
 
-	/*********************************************************************************/
-	/** End of required methods related to audio playing **/
+	/********************************************************************************
+	 * /** End of required methods related to audio playing
+	 **/
 	/*********************************************************************************/
 
 	/*********************************************************************************/
@@ -377,22 +410,39 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	/*********************************************************************************/
 
 	public void onStop() {
-		super.onStop();
+		Log.w("simon", "stop");
 		musicHandler.removeCallbacks(progressBarUpdateTime);
-		audioPlayer.stop(); // simon - bug onStop - correct it out
+		// audioPlayer.stop(); // simon - bug onStop - correct it out
+		Log.w("simon", "finish stop");
+		super.onStop();
 	};
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
+
+		Log.w("simon", "pause");
 		musicHandler.removeCallbacks(progressBarUpdateTime);
 		audioPlayer.pause();
+		playButton.setBackgroundResource(R.drawable.selector_play_button);
+		Log.w("simon", "finish pause");
 		super.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		Log.w("simon", "resume");
+		Log.w("simon", "finish resume");
+		super.onResume();
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
+		Log.w("simon", "destroy");
+		audioPlayer.stop();
+		Log.w("simon", "finish destroy");
 		super.onDestroy();
 	}
 }
