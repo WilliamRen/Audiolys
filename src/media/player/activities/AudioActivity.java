@@ -9,6 +9,7 @@ import media.player.fragments.AudioFragment.onChangeEvents;
 import media.player.fragments.ViewerFragment;
 import media.player.models.Music;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,18 +25,24 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_music);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // prevent app from sleeping
-		
-		musics = (ArrayList<Music>) getIntent().getExtras()
-				.getSerializable("listMusics");
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // prevent
+																				// app
+																				// from
+																				// sleeping
+
+		musics = (ArrayList<Music>) getIntent().getExtras().getSerializable(
+				"listMusics");
 		int selectedMusic = getIntent().getExtras().getInt("selectedMusic");
 
 		// Get the fragments from the fragment manager
-		audioFragment = (AudioFragment) getFragmentManager().findFragmentById(R.id.audio_fragment);
-		viewerFragment = (ViewerFragment) getFragmentManager().findFragmentById(R.id.viewer_fragment);
+		audioFragment = (AudioFragment) getFragmentManager().findFragmentById(
+				R.id.audio_fragment);
+		viewerFragment = (ViewerFragment) getFragmentManager()
+				.findFragmentById(R.id.viewer_fragment);
 
 		// Send datas
-		viewerFragment.sendImageToViewer(musics.get(selectedMusic), Orders.PLAY);
+		viewerFragment
+				.sendImageToViewer(musics.get(selectedMusic), Orders.PLAY);
 		audioFragment.sendData(musics, selectedMusic);
 	}
 
@@ -49,6 +56,17 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	@Override
 	public void onChangeE(Orders o, int s) {
 
+		// Show info about memory
+
+		ActivityManager activityManager = (ActivityManager) getBaseContext()
+				.getSystemService(ACTIVITY_SERVICE);
+		android.app.ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+		activityManager.getMemoryInfo(memoryInfo);
+
+		Log.i("simon", " memoryInfo.availMem " + memoryInfo.availMem + "\n");
+		Log.i("simon", " memoryInfo.lowMemory " + memoryInfo.lowMemory + "\n");
+		Log.i("simon", " memoryInfo.threshold " + memoryInfo.threshold + "\n");
+
 		// Get the fragment from the fragment manager
 		AudioFragment audioF = (AudioFragment) getFragmentManager()
 				.findFragmentById(R.id.audio_fragment);
@@ -58,7 +76,7 @@ public class AudioActivity extends Activity implements onChangeEvents {
 			Log.w("simon", "test callback");
 			viewerFragment.sendImageToViewer(musics.get(s), o.NEXT);
 			break;
-		
+
 		case PREVIOUS:
 			viewerFragment.sendImageToViewer(musics.get(s), o.PREVIOUS);
 			break;
@@ -67,7 +85,7 @@ public class AudioActivity extends Activity implements onChangeEvents {
 			break;
 		}
 	}
-	
+
 	@Override
 	public void finish() {
 		// TODO Auto-generated method stub
@@ -76,4 +94,3 @@ public class AudioActivity extends Activity implements onChangeEvents {
 	}
 
 }
-
