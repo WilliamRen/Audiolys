@@ -1,6 +1,7 @@
 package media.player.activities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -12,10 +13,14 @@ import media.player.utils.SimpleAdapterPerso;
 
 import com.example.media.player.audiolys.R;
 
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +28,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnItemClickListener, OnItemLongClickListener {
 	ProgressBar loading;
@@ -108,30 +114,33 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		switch (arg0.getId()) {
-		case R.id.listView_music:
-			startAudioIntent(arg2);
-			break;
-
-		case R.id.listView_bands:
-			if(arg2==0){
-				musics = getAllMusics();
-				startAudioIntent(0);
-			}else{
-				isBand = false;
-				listViewBand.setVisibility(View.INVISIBLE);
-				listViewMusic.setVisibility(View.VISIBLE);
-				musics = bands.get(arg2-1).getMusics();
-				listMusics = musicToMap(musics);
+			case R.id.listView_music:
+				startAudioIntent(arg2);
+				break;
+	
+			case R.id.listView_bands:
+				if(arg2==0){
+					musics = getAllMusics();
+					startAudioIntent(0);
+				}else{
+					isBand = false;
+					listViewBand.setVisibility(View.INVISIBLE);
+					listViewMusic.setVisibility(View.VISIBLE);
+					musics = bands.get(arg2-1).getMusics();
+					listMusics = musicToMap(musics);
+					
+					SimpleAdapterPerso listMusicAdapter = new SimpleAdapterPerso(
+							getApplicationContext(), listMusics, R.layout.musiclist_item,
+							new String[] {"image", "title", "group"}, new int[] {
+									R.id.imageViewBitmap, R.id.musictitle, R.id.musicband});
+			        listViewMusic.setAdapter(listMusicAdapter);
+			        listViewMusic.setOnItemLongClickListener(this);
+			        listViewMusic.setOnItemClickListener(this);
+			        break;
+				}
 				
-				SimpleAdapterPerso listMusicAdapter = new SimpleAdapterPerso(
-						getApplicationContext(), listMusics, R.layout.musiclist_item,
-						new String[] {"image", "title", "group"}, new int[] {
-								R.id.imageViewBitmap, R.id.musictitle, R.id.musicband});
-		        listViewMusic.setAdapter(listMusicAdapter);
-		        listViewMusic.setOnItemClickListener(this);
-			}
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 	
@@ -147,12 +156,54 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 	// On long click on an band folder, we play all this folder
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
-		if(arg2==0){
-			musics = getAllMusics();
-		}else{
-			musics = bands.get(arg2-1).getMusics();
+		switch (arg0.getId()) {
+			case R.id.listView_music:
+				MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+				mediaMetadataRetriever.setDataSource(musics.get(arg2).getMusic().getAbsolutePath());
+				Dialog metaInfo = new Dialog(MainActivity.this);
+				metaInfo.setContentView(R.layout.meta_popup);
+				metaInfo.setTitle("File metadatas");
+				
+				String title =  mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+				if(title!=null){
+					TextView titleTV = (TextView) metaInfo.findViewById(R.id.title);
+					titleTV.setText(title);
+				}
+				
+				String band = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+				if(band!=null){
+					TextView bandTV = (TextView) metaInfo.findViewById(R.id.band);
+					bandTV.setText(band);
+				}
+				
+				String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+				if(durationStr!=null){
+					int musicDuration = Integer.valueOf(durationStr)/1000;
+					TextView duration = (TextView) metaInfo.findViewById(R.id.duration);
+					duration.setText(" "+(musicDuration/60)+ ":" + (musicDuration%60) + " min ");
+				}
+				
+				String year = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+				if(year!=null){
+					TextView yearTV = (TextView) metaInfo.findViewById(R.id.year);
+					yearTV.setText(year);
+				}
+				
+				metaInfo.show();
+				break;
+				
+			case R.id.listView_bands:
+				if(arg2==0){
+					musics = getAllMusics();
+				}else{
+					musics = bands.get(arg2-1).getMusics();
+				}
+				startAudioIntent(0);
+				break;
+				
+			default:
+				break;
 		}
-		startAudioIntent(0);
 		return false;
 	}
 
