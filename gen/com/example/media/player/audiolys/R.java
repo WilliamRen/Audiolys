@@ -65,7 +65,7 @@ public final class R {
         public static final int shuffle_on_button_released=0x7f02001f;
     }
     public static final class id {
-        public static final int action_settings=0x7f090012;
+        public static final int action_settings=0x7f090013;
         public static final int audio_fragment=0x7f090003;
         public static final int imageViewBitmap=0x7f09000e;
         public static final int imageViewNextButton=0x7f09000c;
@@ -73,6 +73,7 @@ public final class R {
         public static final int imageViewPreviousButton=0x7f09000a;
         public static final int imageViewRepeat=0x7f090009;
         public static final int imageViewShuffle=0x7f09000d;
+        public static final int itemShake=0x7f090012;
         public static final int listView_bands=0x7f090000;
         public static final int listView_music=0x7f090001;
         public static final int musicband=0x7f090010;
@@ -93,7 +94,8 @@ public final class R {
         public static final int viewer_fragment=0x7f030004;
     }
     public static final class menu {
-        public static final int main=0x7f080000;
+        public static final int audio=0x7f080000;
+        public static final int main=0x7f080001;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;

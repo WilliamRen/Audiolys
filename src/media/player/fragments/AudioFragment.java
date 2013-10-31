@@ -11,18 +11,25 @@ import media.player.models.ShakeDetector.OnShakeListener;
 import media.player.utils.MediaUtils;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ClipData.Item;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,12 +55,13 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private int selectedMusic = -1;
 	private Repeat isRepeating = Repeat.NONE;
 	private boolean isShuffling = false;
-	
-	
+	public boolean isShakeActivated = false;
+	private SharedPreferences prefs;
+
 	// The following are used for the shake detection
-		private SensorManager mSensorManager;
-		private Sensor mAccelerometer;
-		private ShakeDetector mShakeDetector;
+	private SensorManager mSensorManager;
+	private Sensor mAccelerometer;
+	private ShakeDetector mShakeDetector;
 
 	public enum Repeat {
 		NONE, ONE, ALL;
@@ -123,28 +131,84 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 		audioPlayer = new AudioPlayer(am);
 		
+		// Get the user's preferences
+		prefs = getActivity().getSharedPreferences("myUserSettings", 0);
+		isShakeActivated = prefs.getBoolean("check", false);
+		if(isShakeActivated)
+
+		Log.w("simon","shake : "+isShakeActivated);
+
 		// ShakeDetector initialization
-		mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mShakeDetector = new ShakeDetector();
-        mShakeDetector.setOnShakeListener(new OnShakeListener() {
- 
-            @Override
-            public void onShake(int count) {
-                /*
-                 * The following method, "handleShakeEvent(count):" is a stub //
-                 * method you would use to setup whatever you want done once the
-                 * device has been shook.
-                 */
-                //handleShakeEvent(count);
-            	selectedMusic = giveMeARandomNumber(0, musics.size()-1);
-            	playNext(Event.PUSH);
-            }
-        });
+		mSensorManager = (SensorManager) getActivity().getSystemService(
+				Context.SENSOR_SERVICE);
+		mAccelerometer = mSensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		mShakeDetector = new ShakeDetector();
+		mShakeDetector.setOnShakeListener(new OnShakeListener() {
+
+			@Override
+			public void onShake(int count) {
+				/*
+				 * The following method, "handleShakeEvent(count):" is a stub //
+				 * method you would use to setup whatever you want done once the
+				 * device has been shook.
+				 */
+				// handleShakeEvent(count);
+				if (audioPlayer.isPlaying() && isShakeActivated) {
+					selectedMusic = giveMeARandomNumber(0, musics.size() - 1);
+					playNext(Event.PUSH);
+				}
+			}
+		});
+
+		// prefs =
+		// PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+		
+
+		// configure menu
+		setHasOptionsMenu(true);
 
 		// Return view
 		return v;
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.audio, menu);
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.itemShake).setChecked(isShakeActivated);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		SharedPreferences.Editor editor = prefs.edit();
+
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.itemShake:
+			if (item.isChecked()) {
+				item.setChecked(false);
+				isShakeActivated = false;
+				editor.putBoolean("check", false);
+			} else {
+				item.setChecked(true);
+				isShakeActivated = true;
+				editor.putBoolean("check", true);
+			}
+			editor.commit();
+			Log.w("simon","shake : "+isShakeActivated);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
 	}
 
 	// Receive data from AudioActivity
@@ -304,8 +368,8 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				selectedMusic = -1;
 				playNext(Event.END);
 			} else {
-				if(isShuffling)
-					selectedMusic = giveMeARandomNumber(0, musics.size()-1);
+				if (isShuffling)
+					selectedMusic = giveMeARandomNumber(0, musics.size() - 1);
 				else
 					selectedMusic++;
 				this.audioPlayer.loading(musics.get(selectedMusic));
@@ -333,18 +397,28 @@ public class AudioFragment extends Fragment implements OnClickListener,
 			}
 
 		} else {
-			
-			if ((selectedMusic + 2) > this.musics.size()) { // Reach the end of the list
-				this.playButton.setBackgroundResource(R.drawable.selector_play_button);
+
+			if ((selectedMusic + 2) > this.musics.size()) { // Reach the end of
+															// the list
+				this.playButton
+						.setBackgroundResource(R.drawable.selector_play_button);
 			} else {
-				if(isShuffling)
-					selectedMusic = giveMeARandomNumber(0, musics.size()-1);
+
+				if (isShuffling)
+					selectedMusic = giveMeARandomNumber(0, musics.size() - 1);
 				else
 					selectedMusic++;
-				
+
 				this.audioPlayer.loading(musics.get(selectedMusic));
-				if (flag)
+				if (flag) {
 					this.audioPlayer.play();
+					this.playButton
+							.setBackgroundResource(R.drawable.selector_pause_button);
+
+				} else {
+					this.playButton
+							.setBackgroundResource(R.drawable.selector_play_button);
+				}
 
 				refresh();// refresh the display
 				mCallBackEvent.onChangeE(Orders.NEXT, selectedMusic);
@@ -409,22 +483,24 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	public void repeatSongs() {
 
-		//this.repeatButton.setImageResource(0);
+		// this.repeatButton.setImageResource(0);
 		this.repeatButton.setBackgroundResource(0);
 		switch (isRepeating) {
 
 		// Change from "repeat nothing" state to "repeat just one"
 		case NONE:
-			//this.repeatButton.setImageResource(R.drawable.repeatone);
-			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_one_button);
+			// this.repeatButton.setImageResource(R.drawable.repeatone);
+			this.repeatButton
+					.setBackgroundResource(R.drawable.selector_repeat_one_button);
 			this.audioPlayer.repeat(true);
 			isRepeating = Repeat.ONE;
 			break;
 
 		// Change from "repeat just one" state to "repeat all"
 		case ONE:
-			//this.repeatButton.setImageResource(R.drawable.repeat);
-			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_all_button);
+			// this.repeatButton.setImageResource(R.drawable.repeat);
+			this.repeatButton
+					.setBackgroundResource(R.drawable.selector_repeat_all_button);
 			this.audioPlayer.repeat(false);
 			isRepeating = Repeat.ALL;
 			break;
@@ -432,32 +508,31 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Change from "repeat all" state to "repeat nothing"
 		case ALL:
 			isRepeating = Repeat.NONE;
-			//this.repeatButton
-			//		.setImageResource(R.drawable.repeat_button_released);
-			this.repeatButton.setBackgroundResource(R.drawable.selector_repeat_button);
+			// this.repeatButton
+			// .setImageResource(R.drawable.repeat_button_released);
+			this.repeatButton
+					.setBackgroundResource(R.drawable.selector_repeat_button);
 			break;
 		}
 	}
 
 	public void shuffleSongs() {
 
-		if(isShuffling)
-		{
-			shuffleButton.setBackgroundResource(R.drawable.selector_shuffle_button);
+		if (isShuffling) {
+			shuffleButton
+					.setBackgroundResource(R.drawable.selector_shuffle_button);
 			isShuffling = false;
-		}
-		else
-		{
-			shuffleButton.setBackgroundResource(R.drawable.selector_shuffle_on_button);
+		} else {
+			shuffleButton
+					.setBackgroundResource(R.drawable.selector_shuffle_on_button);
 			isShuffling = true;
 
 		}
 	}
-	
-	public int giveMeARandomNumber(int min, int max)
-	{
+
+	public int giveMeARandomNumber(int min, int max) {
 		Random r = new Random();
-		int rand= r.nextInt(max - min + 1) + min;
+		int rand = r.nextInt(max - min + 1) + min;
 		return rand;
 	}
 
@@ -469,6 +544,10 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	/*********************************************************************************/
 	/** Related to the lifecycle of the application **/
 	/*********************************************************************************/
+
+	private void loadPref() {
+
+	}
 
 	public void onStop() {
 		Log.w("simon", "stop");
@@ -494,7 +573,8 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
-		mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+		mSensorManager.registerListener(mShakeDetector, mAccelerometer,
+				SensorManager.SENSOR_DELAY_UI);
 		Log.w("simon", "resume");
 		Log.w("simon", "finish resume");
 		super.onResume();
