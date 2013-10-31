@@ -17,9 +17,7 @@ import android.widget.Button;
 public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener, OnCompletionListener{
 
 	private final AudioManager audioManager;
-	public MediaPlayer mediaPlayer;	
-	/*private ArrayList<Music> musics;
-	private int selectedMusic;*/
+	public MediaPlayer mediaPlayer;
 	
 	
 	public AudioPlayer(AudioManager audioManager) {
@@ -28,33 +26,6 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener, OnC
 		this.mediaPlayer.setOnCompletionListener(this);
 	}
 	
-	public void init(ArrayList<Music> m, int selmu)
-	{
-		/*this.selectedMusic = selmu;
-		this.musics = m;*/
-	}
-	
-	/*public void load(int position) {
-		try {
-			// music that is going to be played
-			this.mediaPlayer.reset();
-			//this.mediaPlayer.setDataSource(musics.get(position).getMusic().getAbsolutePath());
-			this.mediaPlayer.prepare();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
 	public void loading(Music music)
 	{
 		try {
@@ -134,6 +105,6 @@ public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener, OnC
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		// TODO Auto-generated method stub
-		
+		Log.w("simon","completion from audio player");
 	}
 }

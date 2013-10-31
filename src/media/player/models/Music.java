@@ -3,8 +3,6 @@ package media.player.models;
 import java.io.File;
 import java.io.Serializable;
 import android.media.MediaMetadataRetriever;
-import android.util.Log;
-
 import media.player.utils.Storage;
 
 public class Music implements Serializable{

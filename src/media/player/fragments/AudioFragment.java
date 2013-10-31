@@ -2,17 +2,17 @@ package media.player.fragments;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import com.example.media.player.audiolys.R;
 import media.player.models.AudioPlayer;
 import media.player.models.Music;
 import media.player.models.ShakeDetector;
 import media.player.models.ShakeDetector.OnShakeListener;
+import media.player.utils.HeadsetPlugReceiver;
 import media.player.utils.MediaUtils;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ClipData.Item;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -20,7 +20,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -55,14 +53,15 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	private int selectedMusic = -1;
 	private Repeat isRepeating = Repeat.NONE;
 	private boolean isShuffling = false;
-	public boolean isShakeActivated = false;
+	private boolean isShakeActivated = false;
 	private SharedPreferences prefs;
-
+	private HeadsetPlugReceiver headsetPlugReceiver;
 	// The following are used for the shake detection
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private ShakeDetector mShakeDetector;
 
+	// Enumeration
 	public enum Repeat {
 		NONE, ONE, ALL;
 	}
@@ -75,7 +74,7 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		PUSH, END;
 	}
 
-	/* EOVariables */
+	/* Enf of Variables */
 
 	public interface onChangeEvents {
 		public void onChangeE(Orders o, int selectedMusic);
@@ -121,22 +120,19 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		previousButton.setOnClickListener(this);
 		repeatButton.setOnClickListener(this);
 		shuffleButton.setOnClickListener(this);
-
 		progressBarMusic.setOnSeekBarChangeListener(this);
 		textViewMusicName.setSelected(true); // make the text moving
 
 		// Set an audio manager + context
 		AudioManager am = (AudioManager) getActivity().getSystemService(
 				Context.AUDIO_SERVICE);
-
 		audioPlayer = new AudioPlayer(am);
-		
+
 		// Get the user's preferences
 		prefs = getActivity().getSharedPreferences("myUserSettings", 0);
 		isShakeActivated = prefs.getBoolean("check", false);
-		if(isShakeActivated)
-
-		Log.w("simon","shake : "+isShakeActivated);
+		if (isShakeActivated)
+			Log.w("simon", "shake : " + isShakeActivated);
 
 		// ShakeDetector initialization
 		mSensorManager = (SensorManager) getActivity().getSystemService(
@@ -161,9 +157,10 @@ public class AudioFragment extends Fragment implements OnClickListener,
 			}
 		});
 
-		// prefs =
-		// PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
-		
+		headsetPlugReceiver = new HeadsetPlugReceiver(this);
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+		getActivity().registerReceiver(headsetPlugReceiver, intentFilter);
 
 		// configure menu
 		setHasOptionsMenu(true);
@@ -171,23 +168,21 @@ public class AudioFragment extends Fragment implements OnClickListener,
 		// Return view
 		return v;
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.audio, menu);
 	}
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		super.onPrepareOptionsMenu(menu);
 		menu.findItem(R.id.itemShake).setChecked(isShakeActivated);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		SharedPreferences.Editor editor = prefs.edit();
 
 		// Handle item selection
@@ -203,12 +198,11 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				editor.putBoolean("check", true);
 			}
 			editor.commit();
-			Log.w("simon","shake : "+isShakeActivated);
+			Log.w("simon", "shake : " + isShakeActivated);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-
 	}
 
 	// Receive data from AudioActivity
@@ -226,7 +220,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
 					public void onCompletion(MediaPlayer mp) {
-						// TODO Auto-generated method stub
 						playNext(Event.END);
 					}
 				});
@@ -238,7 +231,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 
 		// Click on play button
@@ -271,7 +263,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -545,10 +536,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 	/** Related to the lifecycle of the application **/
 	/*********************************************************************************/
 
-	private void loadPref() {
-
-	}
-
 	public void onStop() {
 		Log.w("simon", "stop");
 		musicHandler.removeCallbacks(progressBarUpdateTime);
@@ -559,8 +546,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
-
 		Log.w("simon", "pause");
 		mSensorManager.unregisterListener(mShakeDetector);
 		musicHandler.removeCallbacks(progressBarUpdateTime);
@@ -572,7 +557,6 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		mSensorManager.registerListener(mShakeDetector, mAccelerometer,
 				SensorManager.SENSOR_DELAY_UI);
 		Log.w("simon", "resume");
@@ -582,10 +566,17 @@ public class AudioFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		Log.w("simon", "destroy");
 		audioPlayer.stop();
+		if (headsetPlugReceiver != null) {
+			getActivity().unregisterReceiver(headsetPlugReceiver);
+			headsetPlugReceiver = null;
+		}
 		Log.w("simon", "finish destroy");
 		super.onDestroy();
 	}
+
+	/*********************************************************************************/
+	/** End of functions related to the lifecycle of the application **/
+	/*********************************************************************************/
 }
