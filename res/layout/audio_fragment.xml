@@ -79,16 +79,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/previous_button" />
 
-        <!--
-              <ImageView
-            android:id="@+id/imageViewPlayButton"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.01"
-            android:background="@drawable/selector_play_button"
-            android:contentDescription="@string/play_button" />
-        -->
-
         <ImageView
             android:id="@+id/imageViewPlayButton"
             android:layout_width="wrap_content"

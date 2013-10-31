@@ -7,6 +7,7 @@ import media.player.utils.Storage;
 
 public class Music implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	File music = null;
 	String title = null;
 	String band = null;
@@ -57,16 +58,18 @@ public class Music implements Serializable{
 		this.image = image;
 	}
 
+	//Get the image URI of the cover in the folder
 	private String researchImage(File musicFile) {
 		return Storage.getAlbumCover(musicFile.getParentFile()).getAbsolutePath();
 	}
 	
-	//removing extension of the file to have the musique name.
+	//Get music name if not in metadata by removing extension of the file.
     private String researchTitle(String musicname) {
             String name = musicname.substring(0, musicname.length()-4);
             return name;
     }
 	
+    //Get the name of the band by getting the last part of the file path
 	private String researchBand(File music) {
 		char[] musicFolderArray = music.getParent().toCharArray();
 		int i = musicFolderArray.length - 1;
@@ -74,11 +77,5 @@ public class Music implements Serializable{
 			i--;
 		}
 		return music.getParent().substring(i+1,music.getParent().length());
-	}
-
-	@Override
-	public String toString() {
-		return "Music [music=" + music + ", title=" + title + ", band=" + band
-				+ ", image=" + image + "]";
 	}
 }

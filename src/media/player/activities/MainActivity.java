@@ -1,7 +1,6 @@
 package media.player.activities;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -16,11 +15,9 @@ import com.example.media.player.audiolys.R;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,10 +36,10 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 	ListView listViewMusic;
 	ListView listViewBand;
 	Boolean isBand = true;
+	ProgressBar mProgress;
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
         
         return true;
@@ -58,26 +55,23 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 		musics = new ArrayList<Music>();
         listViewBand = (ListView) findViewById(R.id.listView_bands);
         listViewMusic = (ListView) findViewById(R.id.listView_music);
+        mProgress = (ProgressBar) findViewById(R.id.loadingBar);
 
-	    LoadMusicAsyncTask lmat = new LoadMusicAsyncTask(this);
-		
+	    LoadMusicAsyncTask lmat = new LoadMusicAsyncTask(mProgress);
 	    try {
 	    	bands = lmat.execute().get();
-			
-	        listBands = bandToMap();
-	        SimpleAdapterPerso listBandAdapter = new SimpleAdapterPerso(
-					getApplicationContext(), listBands, R.layout.musiclist_item,
-					new String[] {"image", "title", "number"}, new int[] {R.id.imageViewBitmap, R.id.musictitle,  R.id.musicband});
-	        listViewBand.setAdapter(listBandAdapter);
-	        listViewBand.setOnItemLongClickListener(this);
-	        listViewBand.setOnItemClickListener(this);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	    listBands = bandToMap();
+        SimpleAdapterPerso listBandAdapter = new SimpleAdapterPerso(
+				getApplicationContext(), listBands, R.layout.musiclist_item,
+				new String[] {"image", "title", "number"}, new int[] {R.id.imageViewBitmap, R.id.musictitle,  R.id.musicband});
+        listViewBand.setAdapter(listBandAdapter);
+        listViewBand.setOnItemLongClickListener(this);
+        listViewBand.setOnItemClickListener(this);
     }
 
 	//Put all bands in a hashmap to show it in a ListView
@@ -110,8 +104,9 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 		return listMusic;
 	}
 
-    //On a simple click on a list, we start an intent or show the listview with the music from the selected band
-	@Override
+    //On a simple click on the listViewBand, the listview with the music from the selected band are showed
+    //On a simple click on the listViewMusic, the music player is started with all music from the band but starting with the selected song 
+    @Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		switch (arg0.getId()) {
 			case R.id.listView_music:
@@ -153,7 +148,8 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 		return allMusics;
 	}
 
-	// On long click on an band folder, we play all this folder
+	// On long click on an band folder, we play all musics from this folder
+	// On long click on a music, a popup show some data from metadatas of the file
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 		switch (arg0.getId()) {
@@ -207,7 +203,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 		return false;
 	}
 
-	//Start the music player when music is selected
+	//Start the music player intent when music is selected
 	public void startAudioIntent(int selectedMusic){
 		Intent playerIntent = new Intent(this, AudioActivity.class);
 		Bundle data = new Bundle();

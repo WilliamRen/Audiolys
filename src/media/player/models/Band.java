@@ -8,6 +8,7 @@ import media.player.utils.Storage;
 
 public class Band implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	File band = null;
 	String name = null;
 	ArrayList<Music> musics = new ArrayList<Music>();
@@ -17,7 +18,6 @@ public class Band implements Serializable{
 		this.band = f;
 		this.name = researchBand(f);
 		this.musics = Storage.getFiles(f);
-		
 	}
 	
 	public File getBand() {
@@ -43,7 +43,8 @@ public class Band implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	//Get the name of the band by getting the last part of the file path
 	private String researchBand(File folder) {
 		char[] musicFolderArray = folder.toString().toCharArray();
 		int i = musicFolderArray.length - 1;
@@ -51,13 +52,5 @@ public class Band implements Serializable{
 			i--;
 		}
 		return folder.toString().substring(i+1,folder.toString().length());
-	}
-
-	@Override
-	public String toString() {
-		return "Band [band=" + band + ", name=" + name + ", musics=" + musics
-				+ "]";
-	}
-
-	
+	}	
 }
