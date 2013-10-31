@@ -18,20 +18,11 @@ public class Music implements Serializable{
 		MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
 		mediaMetadataRetriever.setDataSource(music.getAbsolutePath());
 		this.title = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+		if(this.title==null){
+			this.title=researchTitle(music.getName());
+		}
 		this.image = researchImage(music);
 		this.band = researchBand(music);
-		/*Log.i("metadata", "album " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-		Log.i("metadata", "album artiste " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST));
-		Log.i("metadata", "artiste " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-		Log.i("metadata", "author " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR));
-		Log.i("metadata", "bitrate " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
-		Log.i("metadata", "cd track number " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER));
-		Log.i("metadata", "composer " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_COMPOSER));
-		Log.i("metadata", "date " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE));
-		Log.i("metadata", "Disc number " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER));
-		Log.i("metadata", "duration " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-		Log.i("metadata", "genre " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE));
-		Log.i("metadata", "title " + mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));*/
 	}
 
 	public File getMusic() {
@@ -69,6 +60,12 @@ public class Music implements Serializable{
 	private String researchImage(File musicFile) {
 		return Storage.getAlbumCover(musicFile.getParentFile()).getAbsolutePath();
 	}
+	
+	//removing extension of the file to have the musique name.
+    private String researchTitle(String musicname) {
+            String name = musicname.substring(0, musicname.length()-4);
+            return name;
+    }
 	
 	private String researchBand(File music) {
 		char[] musicFolderArray = music.getParent().toCharArray();

@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 	        listBands = bandToMap();
 	        SimpleAdapterPerso listBandAdapter = new SimpleAdapterPerso(
 					getApplicationContext(), listBands, R.layout.musiclist_item,
-					new String[] {"image", "title"}, new int[] {R.id.imageViewBitmap, R.id.musictitle});
+					new String[] {"image", "title", "number"}, new int[] {R.id.imageViewBitmap, R.id.musictitle,  R.id.musicband});
 	        listViewBand.setAdapter(listBandAdapter);
 	        listViewBand.setOnItemLongClickListener(this);
 	        listViewBand.setOnItemClickListener(this);
@@ -84,6 +84,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnIte
 		for (Band band : bands) {
 				hm = new HashMap<String, Object>();
 				hm.put("title", band.getName());
+				hm.put("number", band.getMusics().size() + " Tracks");
 				hm.put("image", BitmapFactory.decodeFile(band.getMusics().get(0).getImage()));
 				listMusic.add(hm);
 		}
