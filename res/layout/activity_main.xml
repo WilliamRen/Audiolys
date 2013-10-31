@@ -3,8 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
+<LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="96dp"
+        android:orientation="vertical">
 
-    
+        <ProgressBar
+            android:id="@+id/loadingBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/textLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text=" Loading ... " />
+
+    </LinearLayout>
+        
     <ListView 
         android:id="@+id/listView_bands"
         android:layout_width="match_parent"
@@ -18,4 +39,5 @@
         android:layout_height="match_parent"
         android:visibility="invisible"
     />
+
 </RelativeLayout>
