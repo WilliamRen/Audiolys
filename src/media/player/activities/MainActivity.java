@@ -10,7 +10,6 @@ import media.player.utils.MediaUtils;
 import media.player.utils.SimpleAdapterPerso;
 import com.example.media.player.audiolys.R;
 import android.media.MediaMetadataRetriever;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
@@ -24,6 +23,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemClickListener,
 		OnItemLongClickListener {
@@ -34,12 +34,10 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	List<HashMap<String, Object>> listMusics;
 	ArrayList<Music> musics;
 	ArrayList<Band> bands;
-	AsyncTask<Void, Void, ArrayList<Band>> b;
 	ListView listViewMusic;
 	ListView listViewBand;
 	Boolean isBand = true;
 	ProgressBar mProgress;
-
 	/* End of Variables */
 
 	// Inflate menu
@@ -66,10 +64,18 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		listViewBand.setOnItemLongClickListener(this);
 		listViewBand.setOnItemClickListener(this);
 
-		// Load bands to make them appear in the listview | btw there is a
-		// progressbar
+		// Load bands to make them appear in the listview | there is a
+		// progressbar btw
 		LoadMusicAsyncTask lmat = new LoadMusicAsyncTask(mProgress, this);
 		lmat.execute(); // go ahead
+		
+		Intent playerIntent = new Intent(this, AudioActivity.class);
+		Bundle data = new Bundle();
+		data.putSerializable("listMusics", musics);
+		data.putInt("selectedMusic", 0);
+		playerIntent.putExtras(data);
+		startActivity(playerIntent);
+		
 	}
 
 	// Get information from the AsyncTask
@@ -138,7 +144,10 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			// Play all button
 			if (itemSelected == 0) {
 				musics = getAllMusics();
-				startAudioIntent(0);
+				if(musics.size() != 0) // musics.
+					startAudioIntent(0);
+				else
+					Toast.makeText(getBaseContext(), "No media found", Toast.LENGTH_LONG).show();
 			} else {
 				// Click on one band specifically
 				isBand = false;
@@ -241,7 +250,10 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			} else {
 				musics = bands.get(arg2 - 1).getMusics();
 			}
-			startAudioIntent(0);
+			if(musics.size() != 0)
+				startAudioIntent(0);
+			else
+				Toast.makeText(getBaseContext(), "No media found", Toast.LENGTH_LONG).show();
 			break;
 
 		default:

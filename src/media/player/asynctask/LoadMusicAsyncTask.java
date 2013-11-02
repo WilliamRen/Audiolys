@@ -11,12 +11,12 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.ProgressBar;
 
-public class LoadMusicAsyncTask extends AsyncTask<Void, Void, ArrayList<Band>> {
+public class LoadMusicAsyncTask extends AsyncTask<Void, Void, Void> {
 	
 	/* Variables */
-	ProgressBar mProgress;
-	Context context;
-	ArrayList<Band> folders;
+	ProgressBar mProgress = null;
+	Context context = null;
+	ArrayList<Band> folders = null;
 	/* End of variables */
 	
 	// Constructor
@@ -35,17 +35,16 @@ public class LoadMusicAsyncTask extends AsyncTask<Void, Void, ArrayList<Band>> {
 
 	// Executing the AsyncTask
 	@Override
-	protected ArrayList<Band> doInBackground(Void... params) {
+	protected Void doInBackground(Void... params) {
 
 		File musicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
 		folders = new ArrayList<Band>();
 		folders = Storage.getFolders(musicDirectory);
-		return null; // simon : change that
+		return null;
 	}
 
 	// After executing the AsyncTask
-	@Override
-	protected void onPostExecute(ArrayList<Band> result) {
+	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
 		mProgress.setVisibility(View.GONE);
 		((MainActivity) context).callFromAsyncTask(folders); // call the main activity

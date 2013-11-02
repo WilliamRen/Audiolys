@@ -2,13 +2,9 @@ package media.player.utils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-
 import media.player.models.Band;
 import media.player.models.Music;
 import android.os.Environment;
-import android.provider.ContactsContract.Directory;
-import android.util.Log;
 
 public class Storage {
 	
@@ -33,13 +29,16 @@ public class Storage {
 	//Get a list of musics
 	public static ArrayList<Music> getFiles(File directory) {
 		ArrayList<Music> awl = new ArrayList<Music>();
-		for (File f : directory.listFiles()) {
-			if (f.isDirectory()) {
-				awl.addAll(getFiles(f));
-			} else if (f.isFile() && isAudioFile(f)) {
-				File music = f;
-				Music aw = new Music(music);
-				awl.add(aw);
+		if(checkStorage().equals(State.MOUNTED) || checkStorage().equals(State.READONLY))
+		{
+			for (File f : directory.listFiles()) {
+				if (f.isDirectory()) {
+					awl.addAll(getFiles(f));
+				} else if (f.isFile() && isAudioFile(f)) {
+					File music = f;
+					Music aw = new Music(music);
+					awl.add(aw);
+				}
 			}
 		}
 		return awl;
@@ -48,10 +47,13 @@ public class Storage {
 	//Get a list of folders in the music directory on the phone
 	public static ArrayList<Band> getFolders(File directory) {
 		ArrayList<Band> directories = new ArrayList<Band>();
-		for (File f : directory.listFiles()) {
-			if (f.isDirectory()) {
-				directories.add(new Band(f));
-			} 
+		if(checkStorage().equals(State.MOUNTED) || checkStorage().equals(State.READONLY))
+		{
+			for (File f : directory.listFiles()) {
+				if (f.isDirectory()) {
+					directories.add(new Band(f));
+				} 
+			}
 		}
 		return directories;
 	}
@@ -59,7 +61,7 @@ public class Storage {
 	// Is the file a music?!
 	public static boolean isAudioFile(File f) {
 		boolean flag = false;
-
+		// only for mp3 and m4a formats
 		if (f.getAbsolutePath().toLowerCase().endsWith(".mp3") || f.getAbsolutePath().toLowerCase().endsWith(".m4a"))
 			flag = true;
 
@@ -71,6 +73,7 @@ public class Storage {
 		File returnFile = null;
 		File[] t = f.listFiles();
 		for (File s : t) {
+			// only for jpg format
 			if (s.getAbsolutePath().toLowerCase().endsWith(".jpg")) {
 				returnFile = s;
 			}

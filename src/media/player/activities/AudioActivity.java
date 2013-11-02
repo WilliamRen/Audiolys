@@ -46,9 +46,9 @@ public class AudioActivity extends Activity implements onChangeEvents {
 				.findFragmentById(R.id.viewer_fragment);
 
 		// Send datas
-		viewerFragment
-				.sendImageToViewer(musics.get(selectedMusic), Orders.PLAY);
-		audioFragment.sendData(musics, selectedMusic);
+		//viewerFragment
+		//		.sendImageToViewer(musics.get(selectedMusic), Orders.PLAY);
+		//audioFragment.sendData(musics, selectedMusic);
 	}
 
 	@Override
@@ -68,9 +68,10 @@ public class AudioActivity extends Activity implements onChangeEvents {
 		android.app.ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
 		activityManager.getMemoryInfo(memoryInfo);
 
-		Log.i("simon", " memoryInfo.availMem " + memoryInfo.availMem + "\n");
-		Log.i("simon", " memoryInfo.lowMemory " + memoryInfo.lowMemory + "\n");
-		Log.i("simon", " memoryInfo.threshold " + memoryInfo.threshold + "\n");
+		// Memory
+		//Log.i("simon", " memoryInfo.availMem " + memoryInfo.availMem + "\n");
+		//Log.i("simon", " memoryInfo.lowMemory " + memoryInfo.lowMemory + "\n");
+		//Log.i("simon", " memoryInfo.threshold " + memoryInfo.threshold + "\n");
 
 		// Get the fragment from the fragment manager
 		AudioFragment audioF = (AudioFragment) getFragmentManager()
@@ -78,7 +79,7 @@ public class AudioActivity extends Activity implements onChangeEvents {
 
 		switch (o) {
 		case NEXT:
-			Log.w("simon", "test callback");
+			//Log.w("simon", "test callback");
 			viewerFragment.sendImageToViewer(musics.get(s), o.NEXT);
 			break;
 

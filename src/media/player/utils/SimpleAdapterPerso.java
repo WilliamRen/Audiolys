@@ -1,10 +1,8 @@
 package media.player.utils;
 
 //SimpleAdapter from SAGI'S TECH
-
 import java.util.List;
 import java.util.Map;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;

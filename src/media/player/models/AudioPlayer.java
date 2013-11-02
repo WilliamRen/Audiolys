@@ -1,24 +1,17 @@
 package media.player.models;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import media.player.fragments.AudioFragment;
-import media.player.fragments.AudioFragment.Repeat;
-
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.util.Log;
-import android.widget.Button;
 
 public class AudioPlayer implements AudioManager.OnAudioFocusChangeListener, OnCompletionListener{
 
+	/* Variables */
 	private final AudioManager audioManager;
 	public MediaPlayer mediaPlayer;
-	
+	/* End of Variables */
 	
 	public AudioPlayer(AudioManager audioManager) {
 		this.audioManager = audioManager;
