@@ -36,10 +36,11 @@ Audiolys is an AWESOME Android media player, allowing you to play your collectio
 	<li>Play a specific song within an album, or all songs in a specific album</li>
 	<li>Implemented a "repeat-all", "repeat-one" and "repeat-none" button</li>
 	<li>Implemented a shuffle button</li>
-	<li>Prevents the application from going to sleep</li>
+	<li>Prevents the application from sleeping</li>
 	<li>When the application lose focus, player is paused and the position in the music is kept</li>
 	<li>Make a song title moving when too long </li>
 	<li>Pushed/Released effects on buttons </li>
+	<li>Progressbar while albums are loading</li>
 </ul>
 
 
