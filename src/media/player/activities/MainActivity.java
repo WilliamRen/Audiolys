@@ -68,14 +68,6 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		// progressbar btw
 		LoadMusicAsyncTask lmat = new LoadMusicAsyncTask(mProgress, this);
 		lmat.execute(); // go ahead
-		
-		Intent playerIntent = new Intent(this, AudioActivity.class);
-		Bundle data = new Bundle();
-		data.putSerializable("listMusics", musics);
-		data.putInt("selectedMusic", 0);
-		playerIntent.putExtras(data);
-		startActivity(playerIntent);
-		
 	}
 
 	// Get information from the AsyncTask

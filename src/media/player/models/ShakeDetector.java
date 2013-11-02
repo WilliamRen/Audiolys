@@ -23,7 +23,7 @@ public class ShakeDetector implements SensorEventListener {
     private int mShakeCount;
  
     public void setOnShakeListener(OnShakeListener listener) {
-        this.mListener = listener;
+        this.mListener = listener; // set a listener
     }
  
     public interface OnShakeListener {

@@ -1,5 +1,7 @@
 package media.player.utils;
 
+import java.util.Random;
+
 /*
  * 		Source code from http://www.androidhive.info
  */
@@ -66,5 +68,17 @@ public class MediaUtils {
 
 		// return current duration in milliseconds
 		return currentDuration * 1000;
+	}
+	
+	/**
+     * Function to give user a random number
+     * @param min
+     * @param max
+     * returns a random number
+     * */
+	public static int giveMeARandomNumber(int min, int max) {
+		Random r = new Random();
+		int rand = r.nextInt(max - min + 1) + min;
+		return rand;
 	}
 }

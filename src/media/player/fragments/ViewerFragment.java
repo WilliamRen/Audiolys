@@ -1,8 +1,6 @@
 package media.player.fragments;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-
 import media.player.animation.AnimationFactory;
 import media.player.animation.AnimationFactory.FlipDirection;
 import media.player.fragments.AudioFragment.Orders;
@@ -20,10 +18,12 @@ import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
 public class ViewerFragment extends Fragment {
-
+	
+	/* Variables */
 	private ViewFlipper vf;
 	private ArrayList<Bitmap> bitmapList = new ArrayList<Bitmap>();
-
+	/* End of variables */
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class ViewerFragment extends Fragment {
 		return v;
 	}
 
+	// Send image to the ViewerFragment
 	public void sendImageToViewer(Music music, Orders o) {
 		String path = music.getImage();
 
@@ -43,7 +44,8 @@ public class ViewerFragment extends Fragment {
 			// Create an image - specific size - convert to bitmap
 			ImageView image = new ImageView(getActivity().getApplicationContext());
 			image.setPadding(100, 100, 100, 100);
-			Bitmap bitmap = new BitmapFactory().decodeFile(path);
+			new BitmapFactory();
+			Bitmap bitmap = BitmapFactory.decodeFile(path);
 			image.setImageBitmap(bitmap);
 			vf.addView(image);
 			bitmapList.add(bitmap);

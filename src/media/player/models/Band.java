@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import media.player.utils.Storage;
 
+// Band models
 public class Band implements Serializable{
 
 	private static final long serialVersionUID = 1L;

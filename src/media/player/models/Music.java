@@ -5,6 +5,7 @@ import java.io.Serializable;
 import android.media.MediaMetadataRetriever;
 import media.player.utils.Storage;
 
+// Music model
 public class Music implements Serializable{
 
 	private static final long serialVersionUID = 1L;

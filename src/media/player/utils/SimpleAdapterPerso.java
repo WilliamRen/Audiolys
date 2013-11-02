@@ -1,6 +1,5 @@
 package media.player.utils;
 
-//SimpleAdapter from SAGI'S TECH
 import java.util.List;
 import java.util.Map;
 import android.content.Context;
@@ -10,13 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 
+// Used for displayed image + text in a listview
 public class SimpleAdapterPerso extends SimpleAdapter {
+	
+	/* Variables */
 	private int mResource;
 	private int[] mTo;
 	private String[] mFrom;
-
 	private List<? extends Map<String, ?>> mData;
-
+	/* End of Variables */
+	
+	// Constructor
 	public SimpleAdapterPerso(Context context, List<? extends Map<String, ?>> data, int resource, String[] from,
 			int[] to) {
 		super(context, data, resource, from, to);
@@ -30,32 +33,26 @@ public class SimpleAdapterPerso extends SimpleAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = super.getView(position, convertView, parent);
-
 		v = createViewFromResourceEx(v, position, convertView, parent, mResource);
-
 		return v;
 	}
 
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		View v = super.getDropDownView(position, convertView, parent);
-
 		v = createViewFromResourceEx(v, position, convertView, parent,
 				mResource);
-
 		return v;
 	}
 
 	private View createViewFromResourceEx(View v, int position,
 			View convertView, ViewGroup parent, int resource) {
-
 		bindView(position, v);
-
 		return v;
 	}
 
 	private void bindView(int position, View view) {
-		final Map dataSet = mData.get(position);
+		final Map<?, ?> dataSet = mData.get(position);
 		if (dataSet == null) {
 			return;
 		}
