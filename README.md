@@ -8,6 +8,12 @@ Audiolys is an AWESOME Android media player, allowing you to play your collectio
 
 <h3>Screenshots</h3>
 
+<a href="http://www.hostingpics.net/viewer.php?id=156779mainscreen.png"><img src="http://img15.hostingpics.net/thumbs/mini_156779mainscreen.png" alt="Heberger image" /></a>
+<a href="http://www.hostingpics.net/viewer.php?id=643004listsongs.png"><img src="http://img15.hostingpics.net/thumbs/mini_643004listsongs.png" alt="Heberger image" /></a>
+<a href="http://www.hostingpics.net/viewer.php?id=869929musicplayed.png"><img src="http://img15.hostingpics.net/thumbs/mini_869929musicplayed.png" alt="Heberger image" /></a>
+<a href="http://www.hostingpics.net/viewer.php?id=500888playingrepeatshuffle.png"><img src="http://img15.hostingpics.net/thumbs/mini_500888playingrepeatshuffle.png" alt="Heberger image" /></a>
+<a href="http://www.hostingpics.net/viewer.php?id=878812shake2shuffle.png"><img src="http://img15.hostingpics.net/thumbs/mini_878812shake2shuffle.png" alt="Heberger image" /></a>
+
 <h3>Features</h3>
 
 <h4>Requirements</h4></dd>
