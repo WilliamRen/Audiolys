@@ -189,7 +189,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 					.getAbsolutePath());
 			Dialog metaInfo = new Dialog(MainActivity.this);
 			metaInfo.setContentView(R.layout.meta_popup);
-			metaInfo.setTitle("File metadatas");
+			metaInfo.setTitle("File metadata");
 
 			// Get title
 			String title = mediaMetadataRetriever
